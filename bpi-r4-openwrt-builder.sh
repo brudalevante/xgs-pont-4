@@ -82,6 +82,7 @@ echo "# CONFIG_PACKAGE_perf is not set" >> .config
 echo "==== VERIFICACIÓN PERF FINAL ===="
 grep perf .config || echo "perf NO está en .config"
 
+
 echo "==== 9. VERIFICA PAQUETES EN .CONFIG ===="
 grep fakemesh .config      || echo "NO aparece fakemesh en .config"
 grep autoreboot .config    || echo "NO aparece autoreboot en .config"
@@ -90,6 +91,9 @@ grep temp-status .config   || echo "NO aparece temp-status en .config"
 grep dawn2 .config         || echo "NO aparece dawn2 en .config"
 grep dawn .config          || echo "NO aparece dawn en .config"
 grep usteer2 .config       || echo "NO aparece usteer2 en .config"
+
+# Refuerza que dawn esté en .config justo antes de compilar
+grep "CONFIG_PACKAGE_dawn=y" .config || echo "CONFIG_PACKAGE_dawn=y" >> .config
 
 echo "==== 10. AÑADE SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
