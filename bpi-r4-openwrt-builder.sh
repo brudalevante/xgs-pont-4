@@ -35,6 +35,7 @@ cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
 cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
 cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
 cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
+cp -rv tmp_comxwrt/dawn openwrt/package/ # <-- Esta línea asegura que dawn esté presente
 
 echo "==== 6. ENTRA EN OPENWRT Y USA feeds.conf.default OFICIAL ===="
 cd openwrt
@@ -93,6 +94,8 @@ sed -i '/CONFIG_PACKAGE_perf=y/d' .config
 sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
+# Refuerza que dawn esté en .config justo antes de compilar
+grep "CONFIG_PACKAGE_dawn=y" .config || echo "CONFIG_PACKAGE_dawn=y" >> .config
 
 echo "==== 10. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
