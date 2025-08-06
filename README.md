@@ -2,7 +2,7 @@
  
  >git clone https://github.com/brudalevante/xgs-pon-3.git   
  
- >chmod 776 -R xgs-pon-3.git
+ >chmod 776 -R xgs-pon-3
  
  >cd xgs-pon-3
  
