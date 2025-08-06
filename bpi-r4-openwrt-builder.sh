@@ -17,7 +17,11 @@ cd ..
 
 echo "==== 3. PREPARA FEEDS Y CONFIGURACIONES BASE ===="
 echo "31c492" > mtk-openwrt-feeds/autobuild/unified/feed_revision
+
+cp -r my_files/w-autobuild.sh mtk-openwrt-feeds/autobuild/unified/autobuild.sh
 cp -r my_files/w-rules mtk-openwrt-feeds/autobuild/unified/filogic/rules
+chmod 776 -R mtk-openwrt-feeds/autobuild/unified
+
 rm -rf mtk-openwrt-feeds/24.10/patches-feeds/108-strongswan-add-uci-support.patch
 
 echo "==== 4. COPIA PARCHES ===="
@@ -26,16 +30,24 @@ cp -r my_files/200-wozi-libiwinfo-fix_noise_reading_for_radios.patch openwrt/pac
 cp -r my_files/99999_tx_power_check.patch mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/24.10/files/package/kernel/mt76/patches/
 cp -r my_files/999-2764-net-phy-sfp-add-some-FS-copper-SFP-fixes.patch openwrt/target/linux/mediatek/patches-6.6/
 
-echo "==== 5. CLONA PAQUETES PERSONALIZADOS (DAWN Y LUCi-APP) ===="
+echo "==== 5. CLONA Y COPIA PAQUETES PERSONALIZADOS ===="
 git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/dawn.git tmp_comxwrt
+cp -rv tmp_comxwrt/luci-app-fakemesh openwrt/package/
+cp -rv tmp_comxwrt/luci-app-autoreboot openwrt/package/
+cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
+cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
+cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
+cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
+cp -rv tmp_comxwrt/dawn openwrt/package/
 
 echo "==== 6. ENTRA EN OPENWRT Y CONFIGURA FEEDS ===="
 cd openwrt
+
 rm -rf feeds/
 cat feeds.conf.default
 
-# Usa mm_perf.config como .config base
-cp -r ../configs/mm_perf.config .config 2>/dev/null || echo "No existe mm_perf.config, omitiendo"
+# AQUÍ VA EL CAMBIO QUE PIDES
+cp -r ../configs/mm_perf_config .config
 
 # Limpia perf en .config ANTES de feeds/install
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
@@ -46,16 +58,7 @@ echo "==== 7. ACTUALIZA E INSTALA FEEDS ===="
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-echo "==== 8. COPIA PAQUETES PERSONALIZADOS AL ARBOL DE PAQUETES ===="
-cp -rv ../tmp_comxwrt/luci-app-fakemesh package/
-cp -rv ../tmp_comxwrt/luci-app-autoreboot package/
-cp -rv ../tmp_comxwrt/luci-app-cpu-status package/
-cp -rv ../tmp_comxwrt/luci-app-temp-status package/
-cp -rv ../tmp_comxwrt/luci-app-dawn2 package/
-cp -rv ../tmp_comxwrt/luci-app-usteer2 package/
-cp -rv ../tmp_comxwrt/dawn package/
-
-echo "==== 9. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
+echo "==== 8. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
 echo "CONFIG_PACKAGE_luci-app-fakemesh=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-autoreboot=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-cpu-status=y" >> .config
@@ -79,7 +82,7 @@ echo "# CONFIG_PACKAGE_perf is not set" >> .config
 echo "==== VERIFICACIÓN PERF FINAL ===="
 grep perf .config || echo "perf NO está en .config"
 
-echo "==== 10. VERIFICA PAQUETES EN .CONFIG ===="
+echo "==== 9. VERIFICA PAQUETES EN .CONFIG ===="
 grep fakemesh .config      || echo "NO aparece fakemesh en .config"
 grep autoreboot .config    || echo "NO aparece autoreboot en .config"
 grep cpu-status .config    || echo "NO aparece cpu-status en .config"
@@ -88,18 +91,18 @@ grep dawn2 .config         || echo "NO aparece dawn2 en .config"
 grep dawn .config          || echo "NO aparece dawn en .config"
 grep usteer2 .config       || echo "NO aparece usteer2 en .config"
 
-echo "==== 11. AÑADE SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
+echo "==== 10. AÑADE SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
 sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
-echo "==== 12. EJECUTA AUTOBUILD ===="
+echo "==== 11. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
-echo "==== 13. COMPILA ===="
+echo "==== 12. COMPILA ===="
 make -j$(nproc)
 
-echo "==== 14. LIMPIEZA FINAL ===="
+echo "==== 13. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
 
