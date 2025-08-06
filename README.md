@@ -1,8 +1,8 @@
 # bpi-r4-openwrt-builder
  
- >git clone ht<span>tps://github.com/woziwrt/bpi-r4-openwrt-builder.git
+ >git clone ht<span>tps://github.com/brudalevante/xgs-pon-3.git.git     
  
- >chmod 776 -R bpi-r4-openwrt-builder
+ >chmod 776 -R xgs-pon-3.git
  
  >cd bpi-r4-openwrt-builder
  
