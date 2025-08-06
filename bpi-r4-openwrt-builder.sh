@@ -45,7 +45,7 @@ rm -rf feeds/
 echo "==== USANDO feeds.conf.default DEL REPO (OFICIAL) ===="
 cat feeds.conf.default
 
-cp -r ../configs/mm_perf_config .config 2>/dev/null || echo "No existe mm_perf_config, omitiendo"
+cp -r ../configs/mm_perf.config .config 2>/dev/null || echo "No existe mm_perf.config, omitiendo"
 
 # Limpia perf en .config ANTES de feeds/install
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
