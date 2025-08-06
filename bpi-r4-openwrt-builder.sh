@@ -38,7 +38,7 @@ cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
 cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
 cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
 cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
-cp -rv tmp_comxwrt/dawn openwrt/package/
+
 
 echo "==== 6. ENTRA EN OPENWRT Y CONFIGURA FEEDS ===="
 cd openwrt
