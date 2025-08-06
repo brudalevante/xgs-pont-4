@@ -94,7 +94,8 @@ sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
 echo "==== 10. EJECUTA AUTOBUILD ===="
-bash ../my_files/w-autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
+echo "==== 10. EJECUTA AUTOBUILD ===="
+bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
 # ==== ELIMINAR EL WARNING EN ROJO DEL MAKEFILE ====
 sed -i 's/\($(call ERROR_MESSAGE,WARNING: Applying padding.*\)/#\1/' package/Makefile
