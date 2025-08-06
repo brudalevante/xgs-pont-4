@@ -4,7 +4,7 @@
  
  >chmod 776 -R xgs-pon-3.git
  
- >cd bpi-r4-openwrt-builder
+ >cd xgs-pon-3.git
  
  BEFORE RUNNING BUILDER READ ALL COMMENTS IN THE SCRIPT !
  
