@@ -45,7 +45,7 @@ rm -rf feeds/
 echo "==== USANDO feeds.conf.default DEL REPO (OFICIAL) ===="
 cat feeds.conf.default
 
-cp -r ../configs/rc1_ext_mm_config .config 2>/dev/null || echo "No existe rc1_ext_mm_config, omitiendo"
+cp -r ../configs/mm_perf_config .config 2>/dev/null || echo "No existe mm_perf_config, omitiendo"
 
 # Limpia perf en .config ANTES de feeds/install
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
@@ -94,9 +94,6 @@ sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
 echo "==== 10. EJECUTA AUTOBUILD ===="
-# Si usas el autobuild oficial de MTK, pon la ruta correcta aquí:
-# bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
-# Si quieres el nuevo w-autobuild.sh, usa esto:
 bash ../my_files/w-autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
 # ==== ELIMINAR EL WARNING EN ROJO DEL MAKEFILE ====
