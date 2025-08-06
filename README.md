@@ -1,6 +1,6 @@
 # bpi-r4-openwrt-builder
  
- >git clone https://github.com/brudalevante/xgs-pon-3.git   
+ >git clone ht<span>tps://github.com/brudalevante/xgs-pon-3.git
  
  >chmod 776 -R xgs-pon-3
  
