@@ -47,7 +47,7 @@ rm -rf feeds/
 cat feeds.conf.default
 
 # AQUÍ VA EL CAMBIO QUE PIDES
-cp -r ../configs/mm_perf_config .config
+cp -r ../configs/mm_perf.config .config
 
 # Limpia perf en .config ANTES de feeds/install
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
