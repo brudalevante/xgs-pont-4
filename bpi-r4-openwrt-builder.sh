@@ -39,14 +39,13 @@ cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
 cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
 cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
 
-
 echo "==== 6. ENTRA EN OPENWRT Y CONFIGURA FEEDS ===="
 cd openwrt
 
 rm -rf feeds/
 cat feeds.conf.default
 
-# AQUÍ VA EL CAMBIO QUE PIDES
+# Aplica configuración base desde configs
 cp -r ../configs/mm_perf.config .config
 
 # Limpia perf en .config ANTES de feeds/install
@@ -81,7 +80,6 @@ echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
 echo "==== VERIFICACIÓN PERF FINAL ===="
 grep perf .config || echo "perf NO está en .config"
-
 
 echo "==== 9. VERIFICA PAQUETES EN .CONFIG ===="
 grep fakemesh .config      || echo "NO aparece fakemesh en .config"
