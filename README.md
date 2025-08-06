@@ -4,7 +4,7 @@
  
  >chmod 776 -R xgs-pon-3.git
  
- >cd xgs-pon-3.git
+ >cd xgs-pon-3
  
  BEFORE RUNNING BUILDER READ ALL COMMENTS IN THE SCRIPT !
  
