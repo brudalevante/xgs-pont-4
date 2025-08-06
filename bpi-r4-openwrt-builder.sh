@@ -27,15 +27,8 @@ cp -r my_files/200-wozi-libiwinfo-fix_noise_reading_for_radios.patch openwrt/pac
 cp -r my_files/99999_tx_power_check.patch mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/24.10/files/package/kernel/mt76/patches/
 cp -r my_files/999-2764-net-phy-sfp-add-some-FS-copper-SFP-fixes.patch openwrt/target/linux/mediatek/patches-6.6/
 
-echo "==== 5. COPIA PAQUETES PERSONALIZADOS ===="
+echo "==== 5. CLONA PAQUETES PERSONALIZADOS ===="
 git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/dawn.git tmp_comxwrt
-cp -rv tmp_comxwrt/luci-app-fakemesh openwrt/package/
-cp -rv tmp_comxwrt/luci-app-autoreboot openwrt/package/
-cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
-cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
-cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
-cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
-cp -rv tmp_comxwrt/dawn openwrt/package/ # <-- Esta línea asegura que dawn esté presente
 
 echo "==== 6. ENTRA EN OPENWRT Y USA feeds.conf.default OFICIAL ===="
 cd openwrt
@@ -56,7 +49,16 @@ echo "# CONFIG_PACKAGE_perf is not set" >> .config
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-echo "==== 7. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
+echo "==== 7. COPIA PAQUETES PERSONALIZADOS AL ARBOL DE PAQUETES ===="
+cp -rv ../tmp_comxwrt/luci-app-fakemesh package/
+cp -rv ../tmp_comxwrt/luci-app-autoreboot package/
+cp -rv ../tmp_comxwrt/luci-app-cpu-status package/
+cp -rv ../tmp_comxwrt/luci-app-temp-status package/
+cp -rv ../tmp_comxwrt/luci-app-dawn2 package/
+cp -rv ../tmp_comxwrt/luci-app-usteer2 package/
+cp -rv ../tmp_comxwrt/dawn package/ # <-- Esta línea asegura que dawn esté presente
+
+echo "==== 8. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
 echo "CONFIG_PACKAGE_luci-app-fakemesh=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-autoreboot=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-cpu-status=y" >> .config
@@ -80,7 +82,7 @@ echo "# CONFIG_PACKAGE_perf is not set" >> .config
 echo "==== VERIFICACIÓN PERF FINAL ===="
 grep perf .config || echo "perf NO está en .config"
 
-echo "==== 8. VERIFICA PAQUETES EN .CONFIG ===="
+echo "==== 9. VERIFICA PAQUETES EN .CONFIG ===="
 grep fakemesh .config      || echo "NO aparece fakemesh en .config"
 grep autoreboot .config    || echo "NO aparece autoreboot en .config"
 grep cpu-status .config    || echo "NO aparece cpu-status en .config"
@@ -89,7 +91,7 @@ grep dawn2 .config         || echo "NO aparece dawn2 en .config"
 grep dawn .config          || echo "NO aparece dawn en .config"
 grep usteer2 .config       || echo "NO aparece usteer2 en .config"
 
-echo "==== 9. AÑADE SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
+echo "==== 10. AÑADE SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
 sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
@@ -97,7 +99,7 @@ echo "# CONFIG_PACKAGE_perf is not set" >> .config
 # Refuerza que dawn esté en .config justo antes de compilar
 grep "CONFIG_PACKAGE_dawn=y" .config || echo "CONFIG_PACKAGE_dawn=y" >> .config
 
-echo "==== 10. EJECUTA AUTOBUILD ===="
+echo "==== 11. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
 # ==== ELIMINAR EL WARNING EN ROJO DEL MAKEFILE ====
@@ -108,10 +110,10 @@ if grep -q "WARNING: Applying padding" scripts/ipkg-make-index.sh; then
     sed -i '/WARNING: Applying padding/d' scripts/ipkg-make-index.sh
 fi
 
-echo "==== 11. COMPILA ===="
+echo "==== 12. COMPILA ===="
 make -j$(nproc)
 
-echo "==== 12. LIMPIEZA FINAL ===="
+echo "==== 13. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
 
