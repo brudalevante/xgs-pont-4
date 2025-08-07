@@ -39,7 +39,16 @@ cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
 cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
 cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
 
-echo "==== 6. ENTRA EN OPENWRT Y CONFIGURA FEEDS ===="
+echo "==== 6. COPIA ARCHIVOS DE CONFIG PERSONALIZADOS ===="
+# Crea las carpetas si no existen
+mkdir -p openwrt/package/base-files/files/etc/config
+mkdir -p openwrt/package/base-files/files/etc
+
+cp -v configs/network openwrt/package/base-files/files/etc/config/network
+cp -v configs/system openwrt/package/base-files/files/etc/config/system
+cp -v my_files/board.json openwrt/package/base-files/files/etc/board.json
+
+echo "==== 7. ENTRA EN OPENWRT Y CONFIGURA FEEDS ===="
 cd openwrt
 
 rm -rf feeds/
@@ -53,11 +62,11 @@ sed -i '/CONFIG_PACKAGE_perf=y/d' .config
 sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
-echo "==== 7. ACTUALIZA E INSTALA FEEDS ===="
+echo "==== 8. ACTUALIZA E INSTALA FEEDS ===="
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-echo "==== 8. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
+echo "==== 9. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
 echo "CONFIG_PACKAGE_luci-app-fakemesh=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-autoreboot=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-cpu-status=y" >> .config
@@ -81,7 +90,7 @@ echo "# CONFIG_PACKAGE_perf is not set" >> .config
 echo "==== VERIFICACIÓN PERF FINAL ===="
 grep perf .config || echo "perf NO está en .config"
 
-echo "==== 9. VERIFICA PAQUETES EN .CONFIG ===="
+echo "==== 10. VERIFICA PAQUETES EN .CONFIG ===="
 grep fakemesh .config      || echo "NO aparece fakemesh en .config"
 grep autoreboot .config    || echo "NO aparece autoreboot en .config"
 grep cpu-status .config    || echo "NO aparece cpu-status en .config"
@@ -93,18 +102,18 @@ grep usteer2 .config       || echo "NO aparece usteer2 en .config"
 # Refuerza que dawn esté en .config justo antes de compilar
 grep "CONFIG_PACKAGE_dawn=y" .config || echo "CONFIG_PACKAGE_dawn=y" >> .config
 
-echo "==== 10. AÑADE SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
+echo "==== 11. AÑADE SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
 sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
-echo "==== 11. EJECUTA AUTOBUILD ===="
+echo "==== 12. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
-echo "==== 12. COMPILA ===="
+echo "==== 13. COMPILA ===="
 make -j$(nproc)
 
-echo "==== 13. LIMPIEZA FINAL ===="
+echo "==== 14. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
 
