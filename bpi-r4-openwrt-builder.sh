@@ -6,7 +6,7 @@ echo "==== 1. LIMPIEZA ===="
 rm -rf openwrt mtk-openwrt-feeds tmp_comxwrt
 
 echo "==== 2. CLONA TUS REPOS PERSONALES ===="
-git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.99.git openwrt || true
+git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100-openwrt.git openwrt || true
 cd openwrt
 git checkout 4941509f573676c4678115a0a3a743ef78b63c17
 cd ..
@@ -40,7 +40,6 @@ cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
 cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
 
 echo "==== 6. COPIA ARCHIVOS DE CONFIG PERSONALIZADOS ===="
-# Crea las carpetas si no existen
 mkdir -p openwrt/package/base-files/files/etc/config
 mkdir -p openwrt/package/base-files/files/etc
 
@@ -54,10 +53,8 @@ cd openwrt
 rm -rf feeds/
 cat feeds.conf.default
 
-# Aplica configuración base desde configs
 cp -r ../configs/mm_perf.config .config
 
-# Limpia perf en .config ANTES de feeds/install
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
 sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
@@ -107,13 +104,24 @@ sed -i '/CONFIG_PACKAGE_perf=y/d' .config
 sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
-echo "==== 12. EJECUTA AUTOBUILD ===="
+# === BLOQUE NUEVO PARA FORZAR WIREGUARD EN LA IMAGEN ===
+echo "==== 12. AÑADE Y VERIFICA WIREGUARD EN .CONFIG ===="
+echo "CONFIG_PACKAGE_kmod-wireguard=y" >> .config
+echo "CONFIG_PACKAGE_wireguard-tools=y" >> .config
+echo "CONFIG_PACKAGE_luci-proto-wireguard=y" >> .config
+make defconfig
+
+# Comprobación final
+echo "==== COMPROBACIÓN FINAL WIREGUARD ===="
+grep wireguard .config || echo "ALGÚN PAQUETE DE WIREGUARD FALTA EN .config"
+
+echo "==== 13. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
-echo "==== 13. COMPILA ===="
+echo "==== 14. COMPILA ===="
 make -j$(nproc)
 
-echo "==== 14. LIMPIEZA FINAL ===="
+echo "==== 15. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
 
