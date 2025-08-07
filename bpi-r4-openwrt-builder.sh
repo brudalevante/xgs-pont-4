@@ -54,38 +54,19 @@ rm -rf feeds/
 cat feeds.conf.default
 
 echo "==== 8. COPIA LA CONFIGURACIÓN BASE (mm_perf.config) ===="
-cp -r ../configs/mm_perf.config .config
+cp -v ../configs/mm_perf.config .config
 
-# Aquí puedes añadir paquetes personalizados SOLO una vez
-echo "==== 9. AÑADE PAQUETES PERSONALIZADOS Y WIREGUARD A .CONFIG ===="
-for pkg in \
-  luci-app-fakemesh \
-  luci-app-autoreboot \
-  luci-app-cpu-status \
-  luci-app-temp-status \
-  luci-app-dawn2 \
-  dawn \
-  luci-app-usteer2 \
-  kmod-wireguard \
-  wireguard-tools \
-  luci-proto-wireguard
-do
-  grep "CONFIG_PACKAGE_${pkg}=y" .config || echo "CONFIG_PACKAGE_${pkg}=y" >> .config
-done
+echo "==== 9. COPIA TU CONFIGURACIÓN PERSONALIZADA AL DEFCONFIG DEL AUTOBUILD ===="
+cp -v ../configs/mm_perf.config ../mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
 
-echo "==== 10. LIMPIA CONFIGURACIÓN DE PERF (NO DESEADO) ===="
-sed -i '/CONFIG_PACKAGE_perf=y/d' .config
-sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
-echo "# CONFIG_PACKAGE_perf is not set" >> .config
-
-echo "==== 11. ACTUALIZA E INSTALA FEEDS ===="
+echo "==== 10. ACTUALIZA E INSTALA FEEDS ===="
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-echo "==== 12. RESUELVE DEPENDENCIAS ===="
+echo "==== 11. RESUELVE DEPENDENCIAS ===="
 make defconfig
 
-echo "==== 13. VERIFICACIÓN FINAL ===="
+echo "==== 12. VERIFICACIÓN FINAL ===="
 for pkg in \
   fakemesh autoreboot cpu-status temp-status dawn2 dawn usteer2 wireguard
 do
@@ -96,13 +77,13 @@ grep "CONFIG_PACKAGE_kmod-wireguard=y" .config || echo "ATENCIÓN: kmod-wireguar
 grep "CONFIG_PACKAGE_wireguard-tools=y" .config || echo "ATENCIÓN: wireguard-tools NO está marcado"
 grep "CONFIG_PACKAGE_luci-proto-wireguard=y" .config || echo "ATENCIÓN: luci-proto-wireguard NO está marcado"
 
-echo "==== 14. EJECUTA AUTOBUILD ===="
+echo "==== 13. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
-echo "==== 15. COMPILA ===="
+echo "==== 14. COMPILA ===="
 make -j$(nproc)
 
-echo "==== 16. LIMPIEZA FINAL ===="
+echo "==== 15. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
 
