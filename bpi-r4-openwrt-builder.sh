@@ -88,11 +88,22 @@ echo "==== 10. ACTUALIZA E INSTALA FEEDS ===="
 echo "==== 11. RESUELVE DEPENDENCIAS (1) ===="
 make defconfig
 
-echo "==== 11b. FUERZA ledtrig-netdev EN .config SI FALTA ===="
+echo "==== 11b. CHEQUEO AVANZADO LEDTRIG-NETDEV ===="
+grep -i ledtrig-netdev .config || echo "NO aparece ledtrig-netdev en .config"
+grep "CONFIG_PACKAGE_kmod-leds-gpio" .config || echo "ATENCIÓN: kmod-leds-gpio NO está marcado"
+grep "CONFIG_LEDS_TRIGGER_NETDEV" .config || echo "ATENCIÓN: kernel no tiene CONFIG_LEDS_TRIGGER_NETDEV!"
+grep "CONFIG_TARGET" .config
+grep PATCHVER .config
+
+echo "==== 11c. FUERZA ledtrig-netdev EN .config SI FALTA ===="
 if ! grep -q "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config; then
-    echo "Forzando kmod-ledtrig-netdev en .config"
     echo "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" >> .config
     make defconfig
+    if grep -q "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config; then
+        echo "OK: kmod-ledtrig-netdev ahora está marcado."
+    else
+        echo "ERROR: sigue sin estar en .config. Revisa dependencias y kernel."
+    fi
 fi
 
 echo "==== 12. VERIFICACIÓN FINAL ===="
