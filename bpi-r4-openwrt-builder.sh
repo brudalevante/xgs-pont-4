@@ -21,6 +21,15 @@ cp -r my_files/w-rules mtk-openwrt-feeds/autobuild/unified/filogic/rules
 chmod 776 -R mtk-openwrt-feeds/autobuild/unified
 rm -rf mtk-openwrt-feeds/24.10/patches-feeds/108-strongswan-add-uci-support.patch
 
+echo "==== 3b. FUERZA CONFIG_LEDS_TRIGGER_NETDEV EN EL KERNEL DE FILOGIC ===="
+KERNEL_CONFIG="openwrt/target/linux/mediatek/filogic/config-6.6"
+if ! grep -q "CONFIG_LEDS_TRIGGER_NETDEV=y" "$KERNEL_CONFIG"; then
+    echo "Añadiendo CONFIG_LEDS_TRIGGER_NETDEV=y al kernel config de filogic"
+    echo "CONFIG_LEDS_TRIGGER_NETDEV=y" >> "$KERNEL_CONFIG"
+else
+    echo "CONFIG_LEDS_TRIGGER_NETDEV=y ya presente en $KERNEL_CONFIG"
+fi
+
 echo "==== 4. COPIA PARCHES ===="
 cp -r my_files/1007-wozi-arch-arm64-dts-mt7988a-add-thermal-zone.patch mtk-openwrt-feeds/24.10/patches-base/
 cp -r my_files/200-wozi-libiwinfo-fix_noise_reading_for_radios.patch openwrt/package/network/utils/iwinfo/patches
