@@ -8,7 +8,7 @@ rm -rf openwrt mtk-openwrt-feeds tmp_comxwrt
 echo "==== 2. CLONA TUS REPOS PERSONALES ===="
 git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100-openwrt.git openwrt || true
 cd openwrt
-git checkout 4941509f573676c4678115a0a3a743ef78b63c17
+# ¡Ya NO hacemos checkout a un commit específico! Así siempre se usa el último commit de la rama.
 cd ..
 git clone https://github.com/brudalevante/mtk-openwrt-6.6.99.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds
@@ -76,6 +76,7 @@ done
 grep "CONFIG_PACKAGE_kmod-wireguard=y" .config || echo "ATENCIÓN: kmod-wireguard NO está marcado"
 grep "CONFIG_PACKAGE_wireguard-tools=y" .config || echo "ATENCIÓN: wireguard-tools NO está marcado"
 grep "CONFIG_PACKAGE_luci-proto-wireguard=y" .config || echo "ATENCIÓN: luci-proto-wireguard NO está marcado"
+grep "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config || echo "ATENCIÓN: kmod-ledtrig-netdev NO está marcado"
 
 echo "==== 13. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
