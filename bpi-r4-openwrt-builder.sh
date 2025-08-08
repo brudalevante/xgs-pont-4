@@ -85,8 +85,15 @@ echo "==== 10. ACTUALIZA E INSTALA FEEDS ===="
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-echo "==== 11. RESUELVE DEPENDENCIAS ===="
+echo "==== 11. RESUELVE DEPENDENCIAS (1) ===="
 make defconfig
+
+echo "==== 11b. FUERZA ledtrig-netdev EN .config SI FALTA ===="
+if ! grep -q "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config; then
+    echo "Forzando kmod-ledtrig-netdev en .config"
+    echo "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" >> .config
+    make defconfig
+fi
 
 echo "==== 12. VERIFICACIÓN FINAL ===="
 for pkg in \
