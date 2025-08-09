@@ -21,14 +21,6 @@ cp -r my_files/w-rules mtk-openwrt-feeds/autobuild/unified/filogic/rules
 chmod 776 -R mtk-openwrt-feeds/autobuild/unified
 rm -rf mtk-openwrt-feeds/24.10/patches-feeds/108-strongswan-add-uci-support.patch
 
-echo "==== 3b. FUERZA CONFIG_LEDS_TRIGGER_NETDEV EN EL KERNEL DE FILOGIC ===="
-KERNEL_CONFIG="openwrt/target/linux/mediatek/filogic/config-6.6"
-if ! grep -q "CONFIG_LEDS_TRIGGER_NETDEV=y" "$KERNEL_CONFIG"; then
-    echo "Añadiendo CONFIG_LEDS_TRIGGER_NETDEV=y al kernel config de filogic"
-    echo "CONFIG_LEDS_TRIGGER_NETDEV=y" >> "$KERNEL_CONFIG"
-else
-    echo "CONFIG_LEDS_TRIGGER_NETDEV=y ya presente en $KERNEL_CONFIG"
-fi
 
 echo "==== 4. COPIA PARCHES ===="
 cp -r my_files/1007-wozi-arch-arm64-dts-mt7988a-add-thermal-zone.patch mtk-openwrt-feeds/24.10/patches-base/
@@ -37,7 +29,7 @@ cp -r my_files/99999_tx_power_check.patch mtk-openwrt-feeds/autobuild/unified/fi
 cp -r my_files/999-2764-net-phy-sfp-add-some-FS-copper-SFP-fixes.patch openwrt/target/linux/mediatek/patches-6.6/
 
 echo "==== 5. CLONA Y COPIA PAQUETES PERSONALIZADOS ===="
-git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/dawn.git tmp_comxwrt
+git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/fakemesh-6g.git tmp_comxwrt
 cp -rv tmp_comxwrt/luci-app-fakemesh openwrt/package/
 cp -rv tmp_comxwrt/luci-app-autoreboot openwrt/package/
 cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
