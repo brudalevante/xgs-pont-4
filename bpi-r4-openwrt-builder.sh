@@ -1,26 +1,34 @@
+#!/bin/bash
 set -e
 
 echo "==== 1. LIMPIEZA ===="
 rm -rf openwrt mtk-openwrt-feeds tmp_comxwrt
 
 echo "==== 2. CLONA TUS REPOS PERSONALES ===="
-git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100-openwrt.git openwrt || true
+git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-2.git openwrt || true
 cd openwrt
 git checkout 4941509f573676c4678115a0a3a743ef78b63c17
 cd ..
-git clone https://github.com/brudalevante/6.6.100.git mtk-openwrt-feeds || true
+git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds
 git checkout 31c492d5c761176fcb15a3099f30d846450c01f5
 cd ..
 
 echo "==== 3. PREPARA FEEDS Y CONFIGURACIONES BASE ===="
 echo "31c492" > mtk-openwrt-feeds/autobuild/unified/feed_revision
-
 cp -r my_files/w-autobuild.sh mtk-openwrt-feeds/autobuild/unified/autobuild.sh
 cp -r my_files/w-rules mtk-openwrt-feeds/autobuild/unified/filogic/rules
 chmod 776 -R mtk-openwrt-feeds/autobuild/unified
-
 rm -rf mtk-openwrt-feeds/24.10/patches-feeds/108-strongswan-add-uci-support.patch
+
+echo "==== 3b. FUERZA CONFIG_LEDS_TRIGGER_NETDEV EN EL KERNEL DE FILOGIC ===="
+KERNEL_CONFIG="openwrt/target/linux/mediatek/filogic/config-6.6"
+if ! grep -q "CONFIG_LEDS_TRIGGER_NETDEV=y" "$KERNEL_CONFIG"; then
+    echo "Añadiendo CONFIG_LEDS_TRIGGER_NETDEV=y al kernel config de filogic"
+    echo "CONFIG_LEDS_TRIGGER_NETDEV=y" >> "$KERNEL_CONFIG"
+else
+    echo "CONFIG_LEDS_TRIGGER_NETDEV=y ya presente en $KERNEL_CONFIG"
+fi
 
 echo "==== 4. COPIA PARCHES ===="
 cp -r my_files/1007-wozi-arch-arm64-dts-mt7988a-add-thermal-zone.patch mtk-openwrt-feeds/24.10/patches-base/
@@ -40,14 +48,12 @@ cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
 echo "==== 6. COPIA ARCHIVOS DE CONFIG PERSONALIZADOS ===="
 mkdir -p openwrt/package/base-files/files/etc/config
 mkdir -p openwrt/package/base-files/files/etc
-
 cp -v configs/network openwrt/package/base-files/files/etc/config/network
 cp -v configs/system openwrt/package/base-files/files/etc/config/system
 cp -v my_files/board.json openwrt/package/base-files/files/etc/board.json
 
 echo "==== 7. ENTRA EN OPENWRT Y CONFIGURA FEEDS ===="
 cd openwrt
-
 rm -rf feeds/
 cat feeds.conf.default
 
@@ -57,12 +63,57 @@ cp -v ../configs/mm_perf.config .config
 echo "==== 9. COPIA TU CONFIGURACIÓN PERSONALIZADA AL DEFCONFIG DEL AUTOBUILD ===="
 cp -v ../configs/mm_perf.config ../mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
 
+echo "==== 9b. AÑADE EL PAQUETE LEDTRIG-NETDEV SI FALTA ===="
+LED_MK="package/kernel/linux/modules/leds.mk"
+PKG_MARKER="KernelPackage/ledtrig-netdev"
+if ! grep -q "$PKG_MARKER" "$LED_MK"; then
+    echo "Añadiendo bloque ledtrig-netdev a $LED_MK"
+    cat <<'EOF' >> "$LED_MK"
+
+define KernelPackage/ledtrig-netdev
+  SUBMENU:=LED modules
+  TITLE:=LED netdev trigger support
+  KCONFIG:=CONFIG_LEDS_TRIGGER_NETDEV
+  FILES:=$(LINUX_DIR)/drivers/leds/trigger/ledtrig-netdev.ko
+  AUTOLOAD:=$(call AutoLoad,50,ledtrig-netdev)
+  DEPENDS:=+kmod-leds-gpio
+endef
+
+define KernelPackage/ledtrig-netdev/description
+ This package provides the netdev trigger for LEDs, allowing LEDs to indicate
+ network device activity and link speed, including support for 10/100/1000/2500/5000/10000 Mbps.
+endef
+
+$(eval $(call KernelPackage,ledtrig-netdev))
+EOF
+else
+    echo "El bloque ledtrig-netdev ya existe en $LED_MK"
+fi
+
 echo "==== 10. ACTUALIZA E INSTALA FEEDS ===="
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-echo "==== 11. RESUELVE DEPENDENCIAS ===="
+echo "==== 11. RESUELVE DEPENDENCIAS (1) ===="
 make defconfig
+
+echo "==== 11b. CHEQUEO AVANZADO LEDTRIG-NETDEV ===="
+grep -i ledtrig-netdev .config || echo "NO aparece ledtrig-netdev en .config"
+grep "CONFIG_PACKAGE_kmod-leds-gpio" .config || echo "ATENCIÓN: kmod-leds-gpio NO está marcado"
+grep "CONFIG_LEDS_TRIGGER_NETDEV" .config || echo "ATENCIÓN: kernel no tiene CONFIG_LEDS_TRIGGER_NETDEV!"
+grep "CONFIG_TARGET" .config
+grep PATCHVER .config
+
+echo "==== 11c. FUERZA ledtrig-netdev EN .config SI FALTA ===="
+if ! grep -q "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config; then
+    echo "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" >> .config
+    make defconfig
+    if grep -q "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config; then
+        echo "OK: kmod-ledtrig-netdev ahora está marcado."
+    else
+        echo "ERROR: sigue sin estar en .config. Revisa dependencias y kernel."
+    fi
+fi
 
 echo "==== 12. VERIFICACIÓN FINAL ===="
 for pkg in \
@@ -74,6 +125,7 @@ done
 grep "CONFIG_PACKAGE_kmod-wireguard=y" .config || echo "ATENCIÓN: kmod-wireguard NO está marcado"
 grep "CONFIG_PACKAGE_wireguard-tools=y" .config || echo "ATENCIÓN: wireguard-tools NO está marcado"
 grep "CONFIG_PACKAGE_luci-proto-wireguard=y" .config || echo "ATENCIÓN: luci-proto-wireguard NO está marcado"
+grep "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config || echo "ATENCIÓN: kmod-ledtrig-netdev NO está marcado"
 
 echo "==== 13. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
@@ -84,3 +136,5 @@ make -j$(nproc)
 echo "==== 15. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
+
+echo "==== Script finalizado correctamente ===="
