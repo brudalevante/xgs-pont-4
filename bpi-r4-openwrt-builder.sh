@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 
 echo "==== 1. LIMPIEZA ===="
@@ -20,15 +21,6 @@ cp -r my_files/w-autobuild.sh mtk-openwrt-feeds/autobuild/unified/autobuild.sh
 cp -r my_files/w-rules mtk-openwrt-feeds/autobuild/unified/filogic/rules
 chmod 776 -R mtk-openwrt-feeds/autobuild/unified
 rm -rf mtk-openwrt-feeds/24.10/patches-feeds/108-strongswan-add-uci-support.patch
-
-echo "==== 3b. FUERZA CONFIG_LEDS_TRIGGER_NETDEV EN EL KERNEL DE FILOGIC ===="
-KERNEL_CONFIG="openwrt/target/linux/mediatek/filogic/config-6.6"
-if ! grep -q "CONFIG_LEDS_TRIGGER_NETDEV=y" "$KERNEL_CONFIG"; then
-    echo "Añadiendo CONFIG_LEDS_TRIGGER_NETDEV=y al kernel config de filogic"
-    echo "CONFIG_LEDS_TRIGGER_NETDEV=y" >> "$KERNEL_CONFIG"
-else
-    echo "CONFIG_LEDS_TRIGGER_NETDEV=y ya presente en $KERNEL_CONFIG"
-fi
 
 echo "==== 4. COPIA PARCHES ===="
 cp -r my_files/1007-wozi-arch-arm64-dts-mt7988a-add-thermal-zone.patch mtk-openwrt-feeds/24.10/patches-base/
@@ -52,7 +44,7 @@ cp -v configs/network openwrt/package/base-files/files/etc/config/network
 cp -v configs/system openwrt/package/base-files/files/etc/config/system
 cp -v my_files/board.json openwrt/package/base-files/files/etc/board.json
 
-echo "==== 7. ENTRA EN OPENWRT Y CONFIGURA FEEDS ===="
+echo "==== 7. ENTRA EN OPENWRT Y USA feeds.conf.default OFICIAL ===="
 cd openwrt
 rm -rf feeds/
 cat feeds.conf.default
@@ -63,77 +55,63 @@ cp -v ../configs/mm_perf.config .config
 echo "==== 9. COPIA TU CONFIGURACIÓN PERSONALIZADA AL DEFCONFIG DEL AUTOBUILD ===="
 cp -v ../configs/mm_perf.config ../mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
 
-echo "==== 9b. AÑADE EL PAQUETE LEDTRIG-NETDEV SI FALTA ===="
-LED_MK="package/kernel/linux/modules/leds.mk"
-PKG_MARKER="KernelPackage/ledtrig-netdev"
-if ! grep -q "$PKG_MARKER" "$LED_MK"; then
-    echo "Añadiendo bloque ledtrig-netdev a $LED_MK"
-    cat <<'EOF' >> "$LED_MK"
-
-define KernelPackage/ledtrig-netdev
-  SUBMENU:=LED modules
-  TITLE:=LED netdev trigger support
-  KCONFIG:=CONFIG_LEDS_TRIGGER_NETDEV
-  FILES:=$(LINUX_DIR)/drivers/leds/trigger/ledtrig-netdev.ko
-  AUTOLOAD:=$(call AutoLoad,50,ledtrig-netdev)
-  DEPENDS:=+kmod-leds-gpio
-endef
-
-define KernelPackage/ledtrig-netdev/description
- This package provides the netdev trigger for LEDs, allowing LEDs to indicate
- network device activity and link speed, including support for 10/100/1000/2500/5000/10000 Mbps.
-endef
-
-$(eval $(call KernelPackage,ledtrig-netdev))
-EOF
-else
-    echo "El bloque ledtrig-netdev ya existe en $LED_MK"
-fi
-
 echo "==== 10. ACTUALIZA E INSTALA FEEDS ===="
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-echo "==== 11. RESUELVE DEPENDENCIAS (1) ===="
+echo "==== 11. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
+echo "CONFIG_PACKAGE_luci-app-fakemesh=y" >> .config
+echo "CONFIG_PACKAGE_luci-app-autoreboot=y" >> .config
+echo "CONFIG_PACKAGE_luci-app-cpu-status=y" >> .config
+echo "CONFIG_PACKAGE_luci-app-temp-status=y" >> .config
+echo "CONFIG_PACKAGE_luci-app-dawn2=y" >> .config
+echo "CONFIG_PACKAGE_dawn=y" >> .config
+echo "CONFIG_PACKAGE_luci-app-usteer2=y" >> .config
+
+# Limpia perf OTRA VEZ antes de make defconfig
+sed -i '/CONFIG_PACKAGE_perf=y/d' .config
+sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
+echo "# CONFIG_PACKAGE_perf is not set" >> .config
+
 make defconfig
 
-echo "==== 11b. CHEQUEO AVANZADO LEDTRIG-NETDEV ===="
-grep -i ledtrig-netdev .config || echo "NO aparece ledtrig-netdev en .config"
-grep "CONFIG_PACKAGE_kmod-leds-gpio" .config || echo "ATENCIÓN: kmod-leds-gpio NO está marcado"
-grep "CONFIG_LEDS_TRIGGER_NETDEV" .config || echo "ATENCIÓN: kernel no tiene CONFIG_LEDS_TRIGGER_NETDEV!"
-grep "CONFIG_TARGET" .config
-grep PATCHVER .config
+# Limpia perf DESPUÉS de make defconfig (por si acaso)
+sed -i '/CONFIG_PACKAGE_perf=y/d' .config
+sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
+echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
-echo "==== 11c. FUERZA ledtrig-netdev EN .config SI FALTA ===="
-if ! grep -q "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config; then
-    echo "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" >> .config
-    make defconfig
-    if grep -q "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config; then
-        echo "OK: kmod-ledtrig-netdev ahora está marcado."
-    else
-        echo "ERROR: sigue sin estar en .config. Revisa dependencias y kernel."
-    fi
-fi
+echo "==== VERIFICACIÓN PERF FINAL ===="
+grep perf .config || echo "perf NO está en .config"
 
-echo "==== 12. VERIFICACIÓN FINAL ===="
-for pkg in \
-  fakemesh autoreboot cpu-status temp-status dawn2 dawn usteer2 wireguard
-do
-  grep $pkg .config || echo "NO aparece $pkg en .config"
-done
+echo "==== 12. VERIFICA PAQUETES EN .CONFIG ===="
+grep fakemesh .config      || echo "NO aparece fakemesh en .config"
+grep autoreboot .config    || echo "NO aparece autoreboot en .config"
+grep cpu-status .config    || echo "NO aparece cpu-status en .config"
+grep temp-status .config   || echo "NO aparece temp-status en .config"
+grep dawn2 .config         || echo "NO aparece dawn2 en .config"
+grep dawn .config          || echo "NO aparece dawn en .config"
+grep usteer2 .config       || echo "NO aparece usteer2 en .config"
 
-grep "CONFIG_PACKAGE_kmod-wireguard=y" .config || echo "ATENCIÓN: kmod-wireguard NO está marcado"
-grep "CONFIG_PACKAGE_wireguard-tools=y" .config || echo "ATENCIÓN: wireguard-tools NO está marcado"
-grep "CONFIG_PACKAGE_luci-proto-wireguard=y" .config || echo "ATENCIÓN: luci-proto-wireguard NO está marcado"
-grep "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config || echo "ATENCIÓN: kmod-ledtrig-netdev NO está marcado"
+echo "==== 13. AÑADE SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
+sed -i '/CONFIG_PACKAGE_perf=y/d' .config
+sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
+echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
-echo "==== 13. EJECUTA AUTOBUILD ===="
+echo "==== 14. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
-echo "==== 14. COMPILA ===="
+# ==== ELIMINAR EL WARNING EN ROJO DEL MAKEFILE ====
+sed -i 's/\($(call ERROR_MESSAGE,WARNING: Applying padding.*\)/#\1/' package/Makefile
+
+echo "==== ELIMINA WARNING SHA-512 DE scripts/ipkg-make-index.sh ===="
+if grep -q "WARNING: Applying padding" scripts/ipkg-make-index.sh; then
+    sed -i '/WARNING: Applying padding/d' scripts/ipkg-make-index.sh
+fi
+
+echo "==== 15. COMPILA ===="
 make -j$(nproc)
 
-echo "==== 15. LIMPIEZA FINAL ===="
+echo "==== 16. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
 
