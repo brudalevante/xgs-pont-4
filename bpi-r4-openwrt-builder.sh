@@ -8,7 +8,7 @@ git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100-openwrt
 cd openwrt
 git checkout 4941509f573676c4678115a0a3a743ef78b63c17
 cd ..
-git clone https://github.com/brudalevante/mtk-openwrt-6.6.99.git mtk-openwrt-feeds || true
+https://github.com/brudalevante/mtk-6.6.100.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds
 git checkout 31c492d5c761176fcb15a3099f30d846450c01f5
 cd ..
