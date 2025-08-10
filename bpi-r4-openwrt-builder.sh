@@ -5,7 +5,7 @@ echo "==== 1. LIMPIEZA ===="
 rm -rf openwrt mtk-openwrt-feeds tmp_comxwrt
 
 echo "==== 2. CLONA TUS REPOS PERSONALES ===="
-git clone --branch main https://github.com/brudalevante/openwrt-kermel-6.6.100.git openwrt || true
+git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-kermel-6.6.100.git openwrt || true
 cd openwrt
 git checkout c21df6451d0714ea6529c90d0f510aa20a5d55ce
 cd ..
