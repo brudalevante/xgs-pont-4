@@ -12,7 +12,7 @@ git checkout c21df6451d0714ea6529c90d0f510aa20a5d55ce
 echo "==== COMMITS DE openwrt ===="
 git log --oneline | head -20
 cd ..
-git clone --branch main https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
+git clone --branch master https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds
 git checkout 31c492d5c761176fcb15a3099f30d846450c01f5
 echo "==== COMMITS DE mtk-openwrt-feeds ===="
