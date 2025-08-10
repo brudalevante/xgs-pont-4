@@ -32,6 +32,28 @@ cd xgs-pont-4
 
 ---
 
+# About This Repository (English)
+
+and apologies—this is my repository in case anyone wants to take a look or make changes.
+
+I compile based on [https://github.com/brudalevante/xgs-pont-4.git](https://github.com/brudalevante/xgs-pont-4.git), but I have made changes, patches, and modifications to OpenWrt to prevent port duplication and to ensure that the LEDs always blink (instead of staying solid), improving the overall operation.
+
+To speed up the compilation process, I created my own OpenWrt build with these patches, and I also use the MTK (MediaTek) repository.  
+Inside the `config` folder, you will find the `network` and `system` files, and in `my_files`, the `board.json` file—all of which were necessary to modify OpenWrt and create the adapted patch, so our router wouldn't look like a disco!
+
+---
+
+# Sobre Este Repositorio (Español)
+
+Este es mi repositorio por si alguien quiere verlo o necesita realizar algún cambio.
+
+Compilo sobre la versión [https://github.com/brudalevante/xgs-pont-4.git](https://github.com/brudalevante/xgs-pont-4.git), pero se han hecho cambios, parches y modificaciones en OpenWrt para evitar la duplicación de puertos y para que los LEDs estén siempre parpadeando (no fijos), mejorando así el funcionamiento.
+
+Para agilizar la compilación, creé mi propio OpenWrt con estos parches y, además, utilizo el repositorio de MTK (MediaTek).  
+Dentro de la carpeta `config` encontraréis los archivos `network` y `system` y, en `my_files`, el archivo `board.json`, que fueron necesarios para poder modificar OpenWrt y crear el parche adaptado, evitando que nuestro router pareciera una discoteca.
+
+---
+
 # Acknowledgments (English)
 
 Special thanks to **woziwrt**—without your work and patches, this project would not have reached this level.  
