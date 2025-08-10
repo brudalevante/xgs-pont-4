@@ -53,7 +53,7 @@ rm -rf feeds/
 cat feeds.conf.default
 
 echo "==== 8. COPIA LA CONFIGURACIÓN BASE (mm_perf.config) ===="
-cp -v ../configs/mm_perf.config .config
+cp -v ../configs/mm_perf. config .config
 
 echo "==== 9. COPIA TU CONFIGURACIÓN PERSONALIZADA AL DEFCONFIG DEL AUTOBUILD ===="
 cp -v ../configs/mm_perf.config ../mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
