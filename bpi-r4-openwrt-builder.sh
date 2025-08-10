@@ -52,11 +52,11 @@ cd openwrt
 rm -rf feeds/
 cat feeds.conf.default
 
-echo "==== 8. COPIA LA CONFIGURACIÓN BASE (rc1_ext_mm_config) ===="
-cp -v ../configs/rc1_ext_mm_config .config
+echo "==== 8. COPIA LA CONFIGURACIÓN BASE (mm_perf.config) ===="
+cp -v ../configs/mm_perf.config .config
 
 echo "==== 9. COPIA TU CONFIGURACIÓN PERSONALIZADA AL DEFCONFIG DEL AUTOBUILD ===="
-cp -v ../configs/rc1_ext_mm_config ../mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
+cp -v ../configs/mm_perf.config ../mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
 
 echo "==== 10. ACTUALIZA E INSTALA FEEDS ===="
 ./scripts/feeds update -a
