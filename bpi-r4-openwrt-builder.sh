@@ -6,17 +6,17 @@ echo "==== 1. LIMPIEZA ===="
 rm -rf openwrt mtk-openwrt-feeds tmp_comxwrt
 
 echo "==== 2. CLONA TUS REPOS PERSONALES ===="
-git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100-openwrt.git openwrt || true
+git clone --branch main https://github.com/brudalevante/openwrt-kermel-6.6.100.git openwrt || true
 cd openwrt
-git checkout 4941509f573676c4678115a0a3a743ef78b63c17
+git checkout c21df6451d0714ea6529c90d0f510aa20a5d55ce
 cd ..
-git clone https://github.com/brudalevante/mtk-openwrt-6.6.99.git mtk-openwrt-feeds || true
+git clone git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds
-git checkout 31c492d5c761176fcb15a3099f30d846450c01f5
+git checkout 5716038e06b2a4dc30d24acb536775522ecd5e20
 cd ..
 
 echo "==== 3. PREPARA FEEDS Y CONFIGURACIONES BASE ===="
-echo "31c492" > mtk-openwrt-feeds/autobuild/unified/feed_revision
+echo "357160" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
 cp -r my_files/w-autobuild.sh mtk-openwrt-feeds/autobuild/unified/autobuild.sh
 cp -r my_files/w-rules mtk-openwrt-feeds/autobuild/unified/filogic/rules
