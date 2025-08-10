@@ -12,7 +12,7 @@ git checkout c21df6451d0714ea6529c90d0f510aa20a5d55ce
 echo "==== COMMITS DE openwrt ===="
 git log --oneline | head -20
 cd ..
-git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
+git clone --branch main https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds
 git checkout 31c492d5c761176fcb15a3099f30d846450c01f5
 echo "==== COMMITS DE mtk-openwrt-feeds ===="
@@ -55,11 +55,14 @@ cp -v ../configs/mm_perf.config .config
 echo "==== 9. COPIA TU CONFIGURACIÓN PERSONALIZADA AL DEFCONFIG DEL AUTOBUILD ===="
 cp -v ../configs/mm_perf.config ../mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
 
-echo "==== 10. ACTUALIZA E INSTALA FEEDS ===="
+echo "==== 10. DA PERMISOS DE EJECUCIÓN A FEEDS ===="
+chmod +x scripts/feeds
+
+echo "==== 11. ACTUALIZA E INSTALA FEEDS ===="
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-echo "==== 11. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
+echo "==== 12. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
 echo "CONFIG_PACKAGE_luci-app-fakemesh=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-autoreboot=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-cpu-status=y" >> .config
@@ -74,7 +77,7 @@ else
     echo "El paquete dawn no está en feeds/packages, revisa tu feeds.conf.default."
 fi
 
-echo "==== 11b. AÑADE PAQUETES WIREGUARD AL .CONFIG (elimina duplicados previos) ===="
+echo "==== 12b. AÑADE PAQUETES WIREGUARD AL .CONFIG (elimina duplicados previos) ===="
 sed -i '/CONFIG_PACKAGE_kmod-wireguard/d' .config
 sed -i '/CONFIG_PACKAGE_wireguard-tools/d' .config
 sed -i '/CONFIG_PACKAGE_luci-proto-wireguard/d' .config
@@ -97,7 +100,7 @@ echo "# CONFIG_PACKAGE_perf is not set" >> .config
 echo "==== VERIFICACIÓN PERF FINAL ===="
 grep perf .config || echo "perf NO está en .config"
 
-echo "==== 12. VERIFICA PAQUETES EN .CONFIG ===="
+echo "==== 13. VERIFICA PAQUETES EN .CONFIG ===="
 grep fakemesh .config      || echo "NO aparece fakemesh en .config"
 grep autoreboot .config    || echo "NO aparece autoreboot en .config"
 grep cpu-status .config    || echo "NO aparece cpu-status en .config"
@@ -106,10 +109,10 @@ grep dawn2 .config         || echo "NO aparece dawn2 en .config"
 grep dawn .config          || echo "NO aparece dawn en .config"
 grep usteer2 .config       || echo "NO aparece usteer2 en .config"
 
-echo "==== 13. RESUELVE DEPENDENCIAS ===="
+echo "==== 14. RESUELVE DEPENDENCIAS ===="
 make defconfig
 
-echo "==== 14. VERIFICACIÓN FINAL ===="
+echo "==== 15. VERIFICACIÓN FINAL ===="
 for pkg in \
   fakemesh autoreboot cpu-status temp-status dawn2 dawn usteer2 wireguard
 do
@@ -120,12 +123,12 @@ grep "CONFIG_PACKAGE_kmod-wireguard=y" .config || echo "ATENCIÓN: kmod-wireguar
 grep "CONFIG_PACKAGE_wireguard-tools=y" .config || echo "ATENCIÓN: wireguard-tools NO está marcado"
 grep "CONFIG_PACKAGE_luci-proto-wireguard=y" .config || echo "ATENCIÓN: luci-proto-wireguard NO está marcado"
 
-echo "==== 15. EJECUTA AUTOBUILD ===="
+echo "==== 16. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
-echo "==== 16. COMPILA ===="
+echo "==== 17. COMPILA ===="
 make -j$(nproc)
 
-echo "==== 17. LIMPIEZA FINAL ===="
+echo "==== 18. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
