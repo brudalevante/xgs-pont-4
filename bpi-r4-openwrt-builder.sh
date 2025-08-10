@@ -1,11 +1,8 @@
-#!/bin/bash
-set -e
-
 echo "==== 1. LIMPIEZA ===="
 rm -rf openwrt mtk-openwrt-feeds tmp_comxwrt
 
 echo "==== 2. CLONA TUS REPOS PERSONALES ===="
-git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-6.6.100.git openwrt || true
+git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100-openwrt.git openwrt || true
 cd openwrt
 git checkout 4941509f573676c4678115a0a3a743ef78b63c17
 cd ..
@@ -16,9 +13,11 @@ cd ..
 
 echo "==== 3. PREPARA FEEDS Y CONFIGURACIONES BASE ===="
 echo "31c492" > mtk-openwrt-feeds/autobuild/unified/feed_revision
+
 cp -r my_files/w-autobuild.sh mtk-openwrt-feeds/autobuild/unified/autobuild.sh
 cp -r my_files/w-rules mtk-openwrt-feeds/autobuild/unified/filogic/rules
 chmod 776 -R mtk-openwrt-feeds/autobuild/unified
+
 rm -rf mtk-openwrt-feeds/24.10/patches-feeds/108-strongswan-add-uci-support.patch
 
 echo "==== 4. COPIA PARCHES ===="
