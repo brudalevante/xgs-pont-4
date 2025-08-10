@@ -1,12 +1,16 @@
 # How to Build (English)
 
-Clone the repository and run the build script:
-```sh
-git clone https://github.com/brudalevante/xgs-pont-4.git
-chmod 776 -R xgs-pont-4
-cd xgs-pont-4
-# BEFORE RUNNING THE BUILDER, READ ALL COMMENTS IN THE SCRIPT!
-./bpi-r4-openwrt-builder.sh
+# bpi-r4-openwrt-builder
+ 
+ >git clone ht<span>tps://github.com/brudalevante/xgs-pon-4.git
+ 
+ >chmod 776 -R xgs-pon-4
+ 
+ >cd xgs-pon-4
+ 
+ BEFORE RUNNING BUILDER READ ALL COMMENTS IN THE SCRIPT !
+ 
+ >./bpi-r4-openwrt-builder.sh
 ```
 **Notes:**
 - Use only VERIFIED mainline OpenWrt commits.
