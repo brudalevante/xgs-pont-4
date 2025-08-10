@@ -23,10 +23,10 @@ echo "==== 2. CLONA REPOSITORIOS ===="
 git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-wowizrt.git openwrt || true
 cd openwrt; git checkout 80e1eace4b0227ec555f6f88782d89b4af43d553; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
 
-git clone https://github.com/brudalevante/mtk-woziwrt-2.git mtk-openwrt-feeds || true
-cd mtk-openwrt-feeds; git checkout 84cc28478b8e42b3575d263eee0b41f6520f73eb; cd -; # Refactor wed amsdu init value
+git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
+cd mtk-openwrt-feeds; git checkout 5716038e06b2a4dc30d24acb536775522ecd5e20; cd -; # Refactor wed amsdu init value
 
-echo "84cc28" > mtk-openwrt-feeds/autobuild/unified/feed_revision
+echo "571603" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
 # Puedes activar el defconfig que te interese aquí
 #\cp -r configs/defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
