@@ -34,12 +34,19 @@ cd xgs-pont-4
 
 # About This Repository (English)
 
-and apologies—this is my repository in case anyone wants to take a look or make changes.
+Good morning, and apologies—this is my repository in case anyone wants to take a look or make changes.
 
 I compile based on [https://github.com/brudalevante/xgs-pont-4.git](https://github.com/brudalevante/xgs-pont-4.git), but I have made changes, patches, and modifications to OpenWrt to prevent port duplication and to ensure that the LEDs always blink (instead of staying solid), improving the overall operation.
 
 To speed up the compilation process, I created my own OpenWrt build with these patches, and I also use the MTK (MediaTek) repository.  
 Inside the `config` folder, you will find the `network` and `system` files, and in `my_files`, the `board.json` file—all of which were necessary to modify OpenWrt and create the adapted patch, so our router wouldn't look like a disco!
+
+---
+
+> **BETA VERSION NOTICE:**  
+> This repository and its builds are currently considered **BETA**.  
+> While it works in my environment, there may still be bugs, missing features, or unexpected behavior.  
+> Please use at your own risk and feel free to report any issues or contribute improvements!
 
 ---
 
@@ -51,6 +58,15 @@ Compilo sobre la versión [https://github.com/brudalevante/xgs-pont-4.git](https
 
 Para agilizar la compilación, creé mi propio OpenWrt con estos parches y, además, utilizo el repositorio de MTK (MediaTek).  
 Dentro de la carpeta `config` encontraréis los archivos `network` y `system` y, en `my_files`, el archivo `board.json`, que fueron necesarios para poder modificar OpenWrt y crear el parche adaptado, evitando que nuestro router pareciera una discoteca.
+
+---
+
+> **AVISO VERSIÓN BETA:**  
+> Este repositorio y sus compilaciones están actualmente en **VERSIÓN BETA**.  
+> Aunque funciona en mi entorno, puede contener errores, faltan características o presentar comportamientos inesperados.  
+> Úsalo bajo tu propia responsabilidad y no dudes en reportar cualquier problema o contribuir con mejoras.
+
+---
 
 ---
 
