@@ -39,7 +39,7 @@ cd openwrt; git checkout c21df6451d0714ea6529c90d0f510aa20a5d55ce; cd -;	# uhttp
 
 git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds; git checkout 5716038e06b2a4dc30d24acb536775522ecd5e20; cd -; # Refactor wed amsdu init value
->>>>>>> 4a1a70ce336a3adf0e332d829b2d61690db2f768
+4a1a70ce336a3adf0e332d829b2d61690db2f768
 
 echo "571603" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
