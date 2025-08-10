@@ -19,27 +19,12 @@ rm -rf openwrt
 rm -rf mtk-openwrt-feeds
 rm -rf tmp_comxwrt
 
-
-echo "==== 2. CLONA TUS REPOS PERSONALES ===="
-git clone --branch main https://github.com/brudalevante/openwrt-kermel-6.6.100.git openwrt || true
-cd openwrt
-git checkout c21df6451d0714ea6529c90d0f510aa20a5d55ce
-cd ..
-git clone git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
-cd mtk-openwrt-feeds
-git checkout 5716038e06b2a4dc30d24acb536775522ecd5e20
-cd ..
-
-echo "==== 3. PREPARA FEEDS Y CONFIGURACIONES BASE ===="
-echo "357160" > mtk-openwrt-feeds/autobuild/unified/feed_revision
-=======
 echo "==== 2. CLONA REPOSITORIOS ===="
 git clone --branch main https://github.com/brudalevante/openwrt-kermel-6.6.100.git openwrt || true
 cd openwrt; git checkout c21df6451d0714ea6529c90d0f510aa20a5d55ce; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
 
 git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds; git checkout 5716038e06b2a4dc30d24acb536775522ecd5e20; cd -; # Refactor wed amsdu init value
-4a1a70ce336a3adf0e332d829b2d61690db2f768
 
 echo "571603" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
