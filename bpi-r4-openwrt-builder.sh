@@ -19,7 +19,7 @@ rm -rf openwrt
 rm -rf mtk-openwrt-feeds
 rm -rf tmp_comxwrt
 
-<<<<<<< HEAD
+
 echo "==== 2. CLONA TUS REPOS PERSONALES ===="
 git clone --branch main https://github.com/brudalevante/openwrt-kermel-6.6.100.git openwrt || true
 cd openwrt
