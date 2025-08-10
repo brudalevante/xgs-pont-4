@@ -24,7 +24,7 @@ git clone --branch main https://github.com/brudalevante/openwrt-kermel-6.6.100.g
 cd openwrt; git checkout c21df6451d0714ea6529c90d0f510aa20a5d55ce; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
 
 git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
-cd mtk-openwrt-feeds; git checkout 5716038e06b2a4dc30d24acb536775522ecd5e20; cd -; # Refactor wed amsdu init value
+cd mtk-openwrt-feeds; git checkout 84cc28478b8e42b3575d263eee0b41f6520f73eb; cd -; # Refactor wed amsdu init value
 
 echo "571603" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
