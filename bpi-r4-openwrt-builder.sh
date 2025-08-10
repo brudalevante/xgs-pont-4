@@ -16,14 +16,14 @@ set -e
 
 echo "==== 1. LIMPIEZA PREVIA ===="
 rm -rf openwrt
-rm -rf mtk-openwrt-feeds
+rm -rf mtk-openwrt-feeds 
 rm -rf tmp_comxwrt
 
 echo "==== 2. CLONA REPOSITORIOS ===="
-git clone --branch main https://github.com/brudalevante/openwrt-kermel-6.6.100.git openwrt || true
-cd openwrt; git checkout c21df6451d0714ea6529c90d0f510aa20a5d55ce; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
+git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-wowizrt.git openwrt || true
+cd openwrt; git checkout 80e1eace4b0227ec555f6f88782d89b4af43d553; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
 
-git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
+git clone https://github.com/brudalevante/mtk-woziwrt-2.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds; git checkout 84cc28478b8e42b3575d263eee0b41f6520f73eb; cd -; # Refactor wed amsdu init value
 
 echo "571603" > mtk-openwrt-feeds/autobuild/unified/feed_revision
