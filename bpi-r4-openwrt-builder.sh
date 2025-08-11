@@ -62,6 +62,7 @@ sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-f
 sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-feeds/autobuild/autobuild_5.4_mac80211_release/mt7986_mac80211/.config
 
 echo "==== 6. COPIA PAQUETES PERSONALIZADOS (mesh, etc) ===="
+git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/fakemesh-6g.git tmp_comxwrt
 \cp -rv tmp_comxwrt/luci-app-fakemesh openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-autoreboot openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
