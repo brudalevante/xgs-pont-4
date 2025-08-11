@@ -21,16 +21,16 @@ rm -rf tmp_comxwrt
 
 echo "==== 2. CLONA REPOSITORIOS ===="
 git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-2.git openwrt || true
-cd openwrt; git checkout 41a49ccb47a4fddac54fac58542ee6dfb0691f79; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
+cd openwrt; git checkout 4941509f573676c4678115a0a3a743ef78b63c17; cd -
 
 git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
-cd mtk-openwrt-feeds; git checkout 5716038e06b2a4dc30d24acb536775522ecd5e20; cd -; # Refactor wed amsdu init value
+cd mtk-openwrt-feeds; git checkout 5716038e06b2a4dc30d24acb536775522ecd5e20; cd - 
 
 echo "571603" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
 # Puedes activar el defconfig que te interese aquí
 #\cp -r configs/defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
-#\cp -r configs/dbg_defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig	# dbg+strongswan
+#\cp -r configs/dbg_defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
 #####\cp -r configs/dbg_defconfig_crypto mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
 
 # Cambia feed_revision si quieres
@@ -66,12 +66,24 @@ git clone --depth=1 --single-branch --branch main https://github.com/brudalevant
 \cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
 
+# ============================================================
+# CREA EL FEEDS.CONF PERSONALIZADO AQUÍ
+echo "==== CREANDO feeds.conf PERSONALIZADO ===="
+cat > openwrt/feeds.conf <<EOF
+src-git packages https://git.openwrt.org/feed/packages.git^8098a4ad60845e541473aaa15d60ce104a752036
+src-git luci https://git.openwrt.org/project/luci.git^00c4c120dd0e50009c8c75392ebb6c78a1e2a61c
+src-git routing https://git.openwrt.org/feed/routing.git^d8f9eab170bb63024596c4133c04a84a7aa8a454
+src-git telephony https://git.openwrt.org/feed/telephony.git^2a4541d46199ac96fac214d02c908402831c4dc6
+src-link mtk_openwrt_feed /home/vboxuser/xgs-pont-4/mtk-openwrt-feeds
+EOF
+# ============================================================
+
 echo "==== 7. CONFIGURACIÓN OPENWRT Y FEEDS ===="
 cd openwrt
 echo "==== LIMPIANDO feeds/ previos ===="
 rm -rf feeds/
-echo "==== USANDO feeds.conf.default DEL REPO (OFICIAL) ===="
-cat feeds.conf.default
+echo "==== USANDO feeds.conf PERSONALIZADO ===="
+cat feeds.conf
 
 \cp -r ../configs/mm_perf.config .config 2>/dev/null || echo "No existe rc1_ext_mm_config, omitiendo"
 
