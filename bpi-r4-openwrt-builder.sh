@@ -47,13 +47,14 @@ sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-f
 
 echo "==== 6. CLONA Y COPIA PAQUETES PERSONALIZADOS ===="
 git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/fakemesh-6g.git tmp_comxwrt
-\cp -rv tmp_comxwrt/luci-app-fakemesh openwrt/package/
-\cp -rv tmp_comxwrt/luci-app-autoreboot openwrt/package/
-\cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
-\cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
-\cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
-\cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
-\cp -rv tmp_comxwrt/force-ledtrig-netdev openwrt/package/   # <-- Dummy netdev
+
+for pkg in luci-app-fakemesh luci-app-autoreboot luci-app-cpu-status luci-app-temp-status luci-app-dawn2 luci-app-usteer2 force-ledtrig-netdev; do
+  if [ -d openwrt/package/$pkg ]; then
+    echo "El paquete $pkg ya existe, sobreescribiendo..."
+    rm -rf openwrt/package/$pkg
+  fi
+  \cp -rv tmp_comxwrt/$pkg openwrt/package/
+done
 
 echo "==== 7. ENTRA EN openwrt/ Y CONFIGURA FEEDS ===="
 cd openwrt
@@ -73,27 +74,25 @@ echo "# CONFIG_PACKAGE_perf is not set" >> .config
 ./scripts/feeds install -a
 
 echo "==== 8. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
-echo "CONFIG_PACKAGE_luci-app-fakemesh=y" >> .config
-echo "CONFIG_PACKAGE_luci-app-autoreboot=y" >> .config
-echo "CONFIG_PACKAGE_luci-app-cpu-status=y" >> .config
-echo "CONFIG_PACKAGE_luci-app-temp-status=y" >> .config
-echo "CONFIG_PACKAGE_luci-app-dawn2=y" >> .config
-echo "CONFIG_PACKAGE_luci-app-usteer2=y" >> .config
-echo "CONFIG_PACKAGE_force-ledtrig-netdev=y" >> .config
+for pkg in luci-app-fakemesh luci-app-autoreboot luci-app-cpu-status luci-app-temp-status luci-app-dawn2 luci-app-usteer2 force-ledtrig-netdev; do
+  if ! grep "CONFIG_PACKAGE_${pkg}=y" .config; then
+    echo "CONFIG_PACKAGE_${pkg}=y" >> .config
+  fi
+done
+
+echo "==== 8.1 FUERZA ACTIVACIÓN DE kmod-ledtrig-netdev SI EL DUMMY NO FUNCIONA ===="
+if ! grep -q "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config; then
+  echo "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" >> .config
+  echo "Forzando manualmente kmod-ledtrig-netdev (el dummy no lo activó automáticamente)"
+fi
 
 echo "==== 9. GENERA DEFCONFIG Y RESUELVE DEPENDENCIAS ===="
 make defconfig
 
 echo "==== 10. VERIFICACIÓN EN .CONFIG ===="
-grep perf .config || echo "perf NO está en .config"
-grep fakemesh .config || echo "NO aparece fakemesh en .config"
-grep autoreboot .config || echo "NO aparece autoreboot en .config"
-grep cpu-status .config || echo "NO aparece cpu-status en .config"
-grep temp-status .config || echo "NO aparece temp-status en .config"
-grep dawn2 .config || echo "NO aparece dawn en .config"
-grep usteer2 .config || echo "NO aparece usteer en .config"
-grep force-ledtrig-netdev .config || echo "NO aparece force-ledtrig-netdev en .config"
-grep kmod-ledtrig-netdev .config || echo "NO aparece kmod-ledtrig-netdev en .config"
+for check in perf fakemesh autoreboot cpu-status temp-status dawn2 usteer2 force-ledtrig-netdev kmod-ledtrig-netdev; do
+  grep $check .config || echo "NO aparece $check en .config"
+done
 
 echo "==== 11. DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
