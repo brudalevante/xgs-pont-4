@@ -94,6 +94,7 @@ echo "CONFIG_PACKAGE_luci-app-cpu-status=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-temp-status=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-dawn2=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-usteer2=y" >> .config
+echo "CONFIG_PACKAGE_force-ledtrig-netdev=y" >> .config
 
 # Limpia perf OTRA VEZ antes de make defconfig
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
