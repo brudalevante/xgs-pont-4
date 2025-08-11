@@ -69,6 +69,7 @@ git clone --depth=1 --single-branch --branch main https://github.com/brudalevant
 \cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
+\cp -rv tmp_comxwrt/force-ledtrig-netdev openwrt/package/   # <--- NUEVA LÍNEA
 
 echo "==== 7. CONFIGURACIÓN OPENWRT Y FEEDS ===="
 cd openwrt
