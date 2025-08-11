@@ -21,12 +21,12 @@ rm -rf tmp_comxwrt
 
 echo "==== 2. CLONA REPOSITORIOS ===="
 git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-2.git openwrt || true
-cd openwrt; git checkout 4941509f573676c4678115a0a3a743ef78b63c17; cd -
+cd openwrt; git checkout 39d725c3e3b486405e6148c8466111ef13516808; cd -
 
 git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds; git checkout 5716038e06b2a4dc30d24acb536775522ecd5e20; cd - 
 
-echo "571603" > mtk-openwrt-feeds/autobuild/unified/feed_revision
+echo "39d725" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
 # Puedes activar el defconfig que te interese aquí
 #\cp -r configs/defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
