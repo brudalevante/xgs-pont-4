@@ -60,7 +60,7 @@ rm -rf feeds/
 
 cat > feeds.conf <<EOF
 src-link mtk_openwrt_feed /home/vboxuser/xgs-pont-4/mtk-openwrt-feeds
-src-git packages https://git.openwrt.org/feed/packages.git^8098a4ad60845e541473aaa15d60ce104a752036
+src-git packages https://git.openwrt.org/feed/packages.git^dfd8a8668f67e20507091279a74309f3fc4a2b6f
 src-git luci https://git.openwrt.org/project/luci.git^00c4c120dd0e50009c8c75392ebb6c78a1e2a61c
 src-git routing https://git.openwrt.org/feed/routing.git^d8f9eab170bb63024596c4133c04a84a7aa8a454
 src-git telephony https://git.openwrt.org/feed/telephony.git^2a4541d46199ac96fac214d02c908402831c4dc6
