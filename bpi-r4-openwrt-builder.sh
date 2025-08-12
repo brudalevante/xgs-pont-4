@@ -81,9 +81,9 @@ cp -v my_files/board.json openwrt/package/base-files/files/etc/board.json
 # CREA EL FEEDS.CONF PERSONALIZADO AQUÍ
 echo "==== CREANDO feeds.conf PERSONALIZADO ===="
 cat > openwrt/feeds.conf <<EOF
-src-git packages https://git.openwrt.org/feed/packages.git^8098a4ad60845e541473aaa15d60ce104a752036
-src-git luci https://git.openwrt.org/project/luci.git^00c4c120dd0e50009c8c75392ebb6c78a1e2a61c
-src-git routing https://git.openwrt.org/feed/routing.git^d8f9eab170bb63024596c4133c04a84a7aa8a454
+src-git packages https://git.openwrt.org/feed/packages.git^c7d1a8c1ae976bd0ad94a351d82ee8fbf16a81f0
+src-git luci https://git.openwrt.org/project/luci.git^d6b13f648339273facc07b173546ace459c1cabe
+src-git routing https://git.openwrt.org/feed/routing.git^85d040f28c21c116c905aa15a66255dde80336e7
 src-git telephony https://git.openwrt.org/feed/telephony.git^2a4541d46199ac96fac214d02c908402831c4dc6
 src-link mtk_openwrt_feed /home/vboxuser/xgs-pont-4/mtk-openwrt-feeds
 EOF
