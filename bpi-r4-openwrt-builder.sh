@@ -20,13 +20,13 @@ rm -rf mtk-openwrt-feeds
 rm -rf tmp_comxwrt
 
 echo "==== 2. CLONA REPOSITORIOS ===="
-git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-led.git openwrt || true
+git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-6.6.100.git openwrt || true
 cd openwrt; git checkout 4941509f573676c4678115a0a3a743ef78b63c17; cd -
 
-git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
-cd mtk-openwrt-feeds; git checkout 5716038e06b2a4dc30d24acb536775522ecd5e20; cd - 
+git clone https://github.com/brudalevante/mtk-openwrt-feeds.git mtk-openwrt-feeds || true
+cd mtk-openwrt-feeds; git checkout 31c492d5c761176fcb15a3099f30d846450c01f5; cd - 
 
-echo "494150" > mtk-openwrt-feeds/autobuild/unified/feed_revision
+echo "31c492" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
 # Puedes activar el defconfig que te interese aquí
 #\cp -r configs/defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
@@ -58,13 +58,24 @@ sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-f
 sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-feeds/autobuild/autobuild_5.4_mac80211_release/mt7986_mac80211/.config
 
 echo "==== 6. COPIA PAQUETES PERSONALIZADOS (mesh, etc) ===="
-git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/fakemesh-6g.git tmp_comxwrt
+git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/fakemesh-espejo.git tmp_comxwrt
 \cp -rv tmp_comxwrt/luci-app-fakemesh openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-autoreboot openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
+\cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
+\cp -rv tmp_comxwrt/force-ledtrig-netdev openwrt/package/
+
+echo "==== 6B. COPIA ARCHIVOS DE CONFIG PERSONALIZADOS ===="
+mkdir -p openwrt/package/base-files/files/etc/config
+mkdir -p openwrt/package/base-files/files/etc
+
+cp -v configs/network openwrt/package/base-files/files/etc/config/network
+cp -v configs/system openwrt/package/base-files/files/etc/config/system
+cp -v my_files/board.json openwrt/package/base-files/files/etc/board.json
+
 
 # ============================================================
 # CREA EL FEEDS.CONF PERSONALIZADO AQUÍ
@@ -92,6 +103,7 @@ sed -i '/CONFIG_PACKAGE_perf=y/d' .config
 sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
+
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
@@ -102,7 +114,8 @@ echo "CONFIG_PACKAGE_luci-app-cpu-status=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-temp-status=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-dawn2=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-usteer2=y" >> .config
-echo "CONFIG_PACKAGE_CONFIG_PACKAGE_dawn=y" >> .config
+echo "CONFIG_PACKAGE_kmod-ledtrig-netdev=y">> .config
+echo "CONFIG_PACKAGE_dawn=y>> .config
 
 # Solo añade dawn si existe el paquete en feeds
 if [ -d "package/feeds/packages/dawn" ]; then
@@ -131,6 +144,9 @@ grep cpu-status .config || echo "NO aparece cpu-status en .config"
 grep temp-status .config || echo "NO aparece temp-status en .config"
 grep dawn2 .config || echo "NO aparece dawn en .config"
 grep usteer2 .config || echo "NO aparece usteer en .config"
+grep kmod-ledtrig-netdev .config || echo "kmod-ledtrig-netdev .config"
+grep dawn .config || echo "NO aparece dawn en .config"
+
 
 echo "==== 10. SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
