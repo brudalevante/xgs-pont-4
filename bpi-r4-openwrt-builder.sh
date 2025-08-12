@@ -130,3 +130,5 @@ make -j$(nproc)
 echo "==== 13. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
+
+echo "==== Script finalizado correctamente ===="
