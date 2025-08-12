@@ -102,7 +102,7 @@ echo "CONFIG_PACKAGE_luci-app-cpu-status=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-temp-status=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-dawn2=y" >> .config
 echo "CONFIG_PACKAGE_luci-app-usteer2=y" >> .config
-echo "CONFIG_PACKAGE_CONFIG_PACKAGE_dawn=y     >> .config
+echo "CONFIG_PACKAGE_CONFIG_PACKAGE_dawn=y" >> .config
 
 # Solo añade dawn si existe el paquete en feeds
 if [ -d "package/feeds/packages/dawn" ]; then
