@@ -148,11 +148,6 @@ grep kmod-ledtrig-netdev .config || echo "kmod-ledtrig-netdev .config"
 grep dawn .config || echo "NO aparece dawn en .config"
 
 
-echo "==== 10. SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
-sed -i '/CONFIG_PACKAGE_perf=y/d' .config
-sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
-echo "# CONFIG_PACKAGE_perf is not set" >> .config
-
 echo "==== 11. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
