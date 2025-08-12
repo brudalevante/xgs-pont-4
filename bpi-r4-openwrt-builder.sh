@@ -57,10 +57,8 @@ echo "==== 7. CONFIGURANDO feeds.conf (TU FEED EL PRIMERO) ===="
 cd openwrt
 rm -rf feeds/
 
-# Copia tu feeds.conf de compilación como backup (por si lo quieres comparar)
 cp feeds.conf.default feeds.conf.default.ORIGINAL
 
-# Crea el feeds.conf real con TU FEED PRIMERO
 cat > feeds.conf <<EOF
 src-link mtk_openwrt_feed /home/vboxuser/xgs-pont-4/mtk-openwrt-feeds
 src-git packages https://git.openwrt.org/feed/packages.git^8098a4ad60845e541473aaa15d60ce104a752036
@@ -89,12 +87,7 @@ echo "CONFIG_PACKAGE_luci-app-temp-status=y"   >> .config
 echo "CONFIG_PACKAGE_luci-app-dawn2=y"         >> .config
 echo "CONFIG_PACKAGE_luci-app-usteer2=y"       >> .config
 echo "CONFIG_PACKAGE_kmod-ledtrig-netdev=y"    >> .config
-
-if [ -d "package/feeds/packages/dawn" ]; then
-    echo "CONFIG_PACKAGE_dawn=y" >> .config
-else
-    echo "El paquete dawn no está en feeds/packages, revisa tu feeds.conf.default."
-fi
+echo "CONFIG_PACKAGE_dawn=y"                   >> .config
 
 # Limpia perf antes de defconfig
 sed -i '/CONFIG_PACKAGE_perf=y/d' .config
@@ -113,15 +106,21 @@ echo "# CONFIG_PACKAGE_perf is not set" >> .config
 echo "==== VERIFICACIÓN PERF FINAL ===="
 grep perf .config || echo "perf NO está en .config"
 
-echo "==== VERIFICANDO PAQUETES EN .CONFIG ===="
-grep fakemesh .config      || echo "NO aparece fakemesh en .config"
-grep autoreboot .config    || echo "NO aparece autoreboot en .config"
-grep cpu-status .config    || echo "NO aparece cpu-status en .config"
-grep temp-status .config   || echo "NO aparece temp-status en .config"
-grep dawn2 .config         || echo "NO aparece dawn2 en .config"
-grep dawn .config          || echo "NO aparece dawn en .config"
-grep usteer2 .config       || echo "NO aparece usteer2 en .config"
-grep CONFIG_PACKAGE_kmod-ledtrig-netdev=y .config || echo "NO aparece kmod-ledtrig-netdev en .config"
+echo "==== VERIFICANDO PAQUETES IMPRESCINDIBLES EN .CONFIG ===="
+for pkg in fakemesh autoreboot cpu-status temp-status dawn2 dawn usteer2; do
+  if grep "CONFIG_PACKAGE_$pkg=y" .config; then
+    echo "OK: $pkg habilitado en .config"
+  else
+    echo "ERROR: $pkg NO aparece habilitado en .config"
+    exit 1
+  fi
+done
+if grep "CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config; then
+  echo "OK: kmod-ledtrig-netdev habilitado en .config"
+else
+  echo "ERROR: kmod-ledtrig-netdev NO aparece habilitado en .config"
+  exit 1
+fi
 
 echo "==== 10. COPIA TU CONFIGURACIÓN PERSONALIZADA AL DEFCONFIG DEL AUTOBUILD ===="
 cp -v ../configs/mm_perf.config ../mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
