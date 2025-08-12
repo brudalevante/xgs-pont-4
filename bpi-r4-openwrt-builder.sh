@@ -24,9 +24,9 @@ git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-6.6.100
 cd openwrt; git checkout 4941509f573676c4678115a0a3a743ef78b63c17; cd -
 
 git clone https://github.com/brudalevante/mtk-openwrt-feeds.git mtk-openwrt-feeds || true
-cd mtk-openwrt-feeds; git checkout 31c492d5c761176fcb15a3099f30d846450c01f5; cd - 
+cd mtk-openwrt-feeds; git checkout 0553fd700709a59ff0b3d0d6cbf02246bc83bee0; cd - 
 
-echo "31c492" > mtk-openwrt-feeds/autobuild/unified/feed_revision
+echo "0553fd" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
 # Puedes activar el defconfig que te interese aquí
 #\cp -r configs/defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
