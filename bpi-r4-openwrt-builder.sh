@@ -56,7 +56,6 @@ cp -v my_files/board.json openwrt/package/base-files/files/etc/board.json
 echo "==== 7. CONFIGURANDO feeds.conf (TU FEED EL PRIMERO) ===="
 cd openwrt
 rm -rf feeds/
-
 cp feeds.conf.default feeds.conf.default.ORIGINAL
 
 cat > feeds.conf <<EOF
@@ -79,20 +78,9 @@ echo "==== 8. ACTUALIZANDO E INSTALANDO FEEDS ===="
 echo "==== 9. COPIANDO CONFIGURACIÓN BASE ===="
 cp -v ../configs/mm_perf.config .config
 
-echo "==== 9b. AÑADIENDO PAQUETES PERSONALIZADOS AL .CONFIG ===="
-echo "CONFIG_PACKAGE_luci-app-fakemesh=y"      >> .config
-echo "CONFIG_PACKAGE_luci-app-autoreboot=y"    >> .config
-echo "CONFIG_PACKAGE_luci-app-cpu-status=y"    >> .config
-echo "CONFIG_PACKAGE_luci-app-temp-status=y"   >> .config
-echo "CONFIG_PACKAGE_luci-app-dawn2=y"         >> .config
-echo "CONFIG_PACKAGE_luci-app-usteer2=y"       >> .config
-echo "CONFIG_PACKAGE_kmod-ledtrig-netdev=y"    >> .config
-echo "CONFIG_PACKAGE_dawn=y"                   >> .config
-
-# Limpia perf antes de defconfig
-sed -i '/CONFIG_PACKAGE_perf=y/d' .config
-sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
-echo "# CONFIG_PACKAGE_perf is not set" >> .config
+# Por si acaso, fuerza los paquetes críticos
+echo "CONFIG_PACKAGE_dawn=y" >> .config
+echo "CONFIG_PACKAGE_luci-app-fakemesh=y" >> .config
 
 awk '!a[$0]++' .config > .config.tmp && mv .config.tmp .config
 
