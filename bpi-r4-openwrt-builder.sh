@@ -87,18 +87,30 @@ sed -i '/CONFIG_PACKAGE_perf=y/d' .config
 sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
 echo "# CONFIG_PACKAGE_perf is not set" >> .config
 
-# COMPROBACIÓN CRÍTICA: Detener si falta este paquete
-if grep -q "^CONFIG_PACKAGE_kmod-ledtrig-netdev=y" .config; then
-  echo "OK: kmod-ledtrig-netdev habilitado en .config"
-else
-  echo "ERROR: kmod-ledtrig-netdev NO aparece habilitado en .config"
-  exit 1
-fi
+# ===== 11. VERIFICA PAQUETES CRÍTICOS EN .config =====
+echo "==== 10. VERIFICANDO PAQUETES IMPRESCINDIBLES EN .config ===="
+check_pkg() {
+  local pkg="$1"
+  if grep -q "^${pkg}=y" .config; then
+    echo "OK: $pkg habilitado en .config"
+  else
+    echo "ERROR: $pkg NO aparece habilitado en .config"
+    exit 1
+  fi
+}
 
-echo "==== 10. COPIA TU CONFIGURACIÓN PERSONALIZADA AL DEFCONFIG DEL AUTOBUILD ===="
+# Paquetes críticos, añade más si los necesitas:
+check_pkg "CONFIG_PACKAGE_kmod-ledtrig-netdev"
+check_pkg "CONFIG_PACKAGE_luci-app-fakemesh"
+check_pkg "CONFIG_PACKAGE_luci-app-dawn2"
+check_pkg "CONFIG_PACKAGE_luci-app-usteer2"
+check_pkg "CONFIG_PACKAGE_dawn"
+
+# ===== 12. COPIA TU CONFIGURACIÓN PERSONALIZADA AL DEFCONFIG DEL AUTOBUILD =====
+echo "==== 11. COPIANDO TU CONFIGURACIÓN BASE AL DEFCONFIG DEL AUTOBUILD ===="
 \cp -v ../configs/mm_perf.config ../mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
 
-echo "==== 11. EJECUTA AUTOBUILD ===="
+echo "==== 12. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
 # ==== ELIMINAR EL WARNING EN ROJO DEL MAKEFILE ====
@@ -109,10 +121,10 @@ if grep -q "WARNING: Applying padding" scripts/ipkg-make-index.sh; then
   sed -i '/WARNING: Applying padding/d' scripts/ipkg-make-index.sh
 fi
 
-echo "==== 12. COMPILANDO ===="
+echo "==== 13. COMPILANDO ===="
 make -j$(nproc)
 
-echo "==== 13. LIMPIEZA FINAL ===="
+echo "==== 14. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
 
