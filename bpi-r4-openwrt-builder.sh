@@ -4,14 +4,18 @@ set -e
 echo "==== 1. LIMPIEZA ===="
 rm -rf openwrt mtk-openwrt-feeds tmp_comxwrt
 
-# ===== 3. CLONA REPOSITORIOS Y FIJA COMMITS EXACTOS =====
-echo "==== 2. CLONA REPOSITORIOS Y CHECKOUT EXÁCTO ===="
-git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100.git openwrt || true
-cd openwrt; git checkout ab309245478d6a3ce120e241c9e1ec42d7985a2a; cd -
 
-git clone https://github.com/brudalevante/mtk-openwrt-feeds.git mtk-openwrt-feeds || true
-cd mtk-openwrt-feeds; git checkout 0553fd700709a59ff0b3d0d6cbf02246bc83bee0; cd -
+echo "==== 2. CLONA TUS REPOS PERSONALES ===="
+git clone --branch main https://github.com/brudalevante/openwrt-kermel-6.6.100.git openwrt || true
+cd openwrt
+git checkout ab309245478d6a3ce120e241c9e1ec42d7985a2a
+cd ..
+git clone https://github.com/brudalevante/led-mtk.git mtk-openwrt-feeds || true
+cd mtk-openwrt-feeds
+git checkout 0553fd700709a59ff0b3d0d6cbf02246bc83bee0
+cd ..
 
+echo "==== 3. PREPARA FEEDS Y CONFIGURACIONES BASE ===="
 echo "0553fd" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
 cp -r my_files/w-autobuild.sh mtk-openwrt-feeds/autobuild/unified/autobuild.sh
