@@ -20,13 +20,13 @@ rm -rf mtk-openwrt-feeds
 rm -rf tmp_comxwrt
 
 echo "==== 2. CLONA REPOSITORIOS ===="
-git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100.git openwrt || true
-cd openwrt; git checkout ab309245478d6a3ce120e241c9e1ec42d7985a2a; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
+git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-13-08-2025.git openwrt || true
+cd openwrt; git checkout 9d193d9b6549bd63117e17e22895b3cfb6de562b; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
 
-git clone https://github.com/brudalevante/mtk-openwrt-feeds.git mtk-openwrt-feeds || true
-cd mtk-openwrt-feeds; git checkout 0553fd700709a59ff0b3d0d6cbf02246bc83bee0; cd -; # Refactor wed amsdu init value
+git clone https://github.com/brudalevante/mtk-13-08-2025.git mtk-openwrt-feeds || true
+cd mtk-openwrt-feeds; git checkout 927c227f021b2b18b5494b0314413a7b0112a5e5; cd -; # Refactor wed amsdu init value
 
-echo "0553fd" > mtk-openwrt-feeds/autobuild/unified/feed_revision
+echo "927c22" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
 # Puedes activar el defconfig que te interese aquí
 #\cp -r configs/defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
