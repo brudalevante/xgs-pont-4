@@ -12,8 +12,8 @@ rm -rf tmp_comxwrt
 
 # ===== 3. CLONA REPOSITORIOS Y FIJA COMMITS EXACTOS =====
 echo "==== 2. CLONA REPOSITORIOS Y CHECKOUT EXÁCTO ===="
-git clone --branch main https://github.com/brudalevante/openwrt-6.6.100.git openwrt || true
-cd openwrt; git checkout 4941509f573676c4678115a0a3a743ef78b63c17; cd -
+git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100.git openwrt || true
+cd openwrt; git checkout 89d52fb91c3c5cec5e0f1624fcd89b4cf108c575; cd -
 
 git clone https://github.com/brudalevante/mtk-openwrt-feeds.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds; git checkout 0553fd700709a59ff0b3d0d6cbf02246bc83bee0; cd -
@@ -35,14 +35,13 @@ sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-f
 
 # ===== 6. CLONA Y COPIA PAQUETES PERSONALIZADOS =====
 echo "==== 5. CLONANDO Y COPIANDO PAQUETES PERSONALIZADOS ===="
-git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/fakemesh-espejo.git tmp_comxwrt
+git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/fakemesh-6g.git tmp_comxwrt
 \cp -rv tmp_comxwrt/luci-app-fakemesh openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-autoreboot openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
 \cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
-\cp -rv tmp_comxwrt/force-ledtrig-netdev openwrt/package/
 
 # ===== 7. COPIA ARCHIVOS DE CONFIG BASE =====
 echo "==== 6. COPIANDO CONFIGURACIÓN BASE ===="
@@ -52,15 +51,15 @@ mkdir -p openwrt/package/base-files/files/etc
 \cp -v configs/system openwrt/package/base-files/files/etc/config/system
 \cp -v my_files/board.json openwrt/package/base-files/files/etc/board.json
 
-# ===== 8. PRIORIZA TU FEED EN feeds.conf Y NO EL DEFAULT =====
+# ===== 8. PRIORIZA TU FEED PERSONAL EN feeds.conf =====
 echo "==== 7. CONFIGURANDO feeds.conf (TU FEED EL PRIMERO) ===="
 cd openwrt
 rm -rf feeds/
 \cp feeds.conf.default feeds.conf.default.ORIGINAL
 
 cat > feeds.conf <<EOF
-src-link mtk_openwrt_feed /home/vboxuser/xgs-pont-4/mtk-openwrt-feeds
-src-git packages https://git.openwrt.org/feed/packages.git^dfd8a8668f67e20507091279a74309f3fc4a2b6f
+src-git mtk_openwrt_feed https://github.com/brudalevante/mtk-openwrt-feeds.git^0553fd700709a59ff0b3d0d6cbf02246bc83bee0
+src-git packages https://git.openwrt.org/feed/packages.git^8098a4ad60845e541473aaa15d60ce104a752036
 src-git luci https://git.openwrt.org/project/luci.git^00c4c120dd0e50009c8c75392ebb6c78a1e2a61c
 src-git routing https://git.openwrt.org/feed/routing.git^d8f9eab170bb63024596c4133c04a84a7aa8a454
 src-git telephony https://git.openwrt.org/feed/telephony.git^2a4541d46199ac96fac214d02c908402831c4dc6
