@@ -23,7 +23,7 @@ echo "==== 2. CLONA REPOSITORIOS ===="
 git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100.git openwrt || true
 cd openwrt; git checkout ab309245478d6a3ce120e241c9e1ec42d7985a2a; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
 
-git clone https://github.com/brudalevante/mtk-openwrt-feeds.gi mtk-openwrt-feeds || true
+git clone https://github.com/brudalevante/mtk-openwrt-feeds.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds; git checkout 0553fd700709a59ff0b3d0d6cbf02246bc83bee0; cd -; # Refactor wed amsdu init value
 
 echo "0553fd" > mtk-openwrt-feeds/autobuild/unified/feed_revision
