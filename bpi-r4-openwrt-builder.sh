@@ -17,7 +17,7 @@ set -e
 # Variables de commit/branch (modifica según tus últimos cambios)
 OPENWRT_REPO="https://github.com/brudalevante/openwrt-13-08-2025.git"
 OPENWRT_BRANCH="openwrt-24.10"
-OPENWRT_COMMIT="adc4f07e43d27a77d40135e02b83c3185d366cca"
+OPENWRT_COMMIT="1ef48cdfe461a53d61c07f74c51997f0876bfde8"
 
 FEEDS_REPO="https://github.com/brudalevante/mtk-13-08-2025.git"
 FEEDS_COMMIT="927c227f021b2b18b5494b0314413a7b0112a5e5"
