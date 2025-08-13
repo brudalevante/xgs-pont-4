@@ -21,7 +21,7 @@ rm -rf tmp_comxwrt
 
 echo "==== 2. CLONA REPOSITORIOS ===="
 git clone --branch openwrt-24.10 https://github.com/brudalevante/openwrt-13-08-2025.git openwrt || true
-cd openwrt; git checkout 9d193d9b6549bd63117e17e22895b3cfb6de562b; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
+cd openwrt; git checkout adc4f07e43d27a77d40135e02b83c3185d366cca; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
 
 git clone https://github.com/brudalevante/mtk-13-08-2025.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds; git checkout 927c227f021b2b18b5494b0314413a7b0112a5e5; cd -; # Refactor wed amsdu init value
