@@ -20,12 +20,14 @@ cd mtk-openwrt-feeds; git checkout 0553fd700709a59ff0b3d0d6cbf02246bc83bee0; cd 
 
 echo "0553fd" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
-# ===== 4. COPIA PARCHES Y CONFIGS PERSONALIZADOS =====
+# ===== 4. COPIA PARCHES Y CONFIGS PERSONALIZADOS (menos cryptsetup host-build) =====
 echo "==== 3. COPIANDO PARCHES Y CONFIGS PERSONALIZADOS ===="
 \cp -r my_files/1007-wozi-arch-arm64-dts-mt7988a-add-thermal-zone.patch mtk-openwrt-feeds/24.10/patches-base/
 cp -r my_files/200-wozi-libiwinfo-fix_noise_reading_for_radios.patch openwrt/package/network/utils/iwinfo/patches
 \cp -r my_files/99999_tx_power_check.patch mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/24.10/files/package/kernel/mt76/patches/
 \cp -r my_files/999-2764-net-phy-sfp-add-some-FS-copper-SFP-fixes.patch openwrt/target/linux/mediatek/patches-6.6/
+
+# NOTA: No copiamos el parche cryptsetup-01-add-host-build, ya no es necesario.
 
 # ===== 5. DESACTIVA PERF EN CONFIGS BASE =====
 echo "==== 4. DESACTIVANDO PERF EN CONFIGS BASE ===="
