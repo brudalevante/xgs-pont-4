@@ -39,7 +39,7 @@ cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
 cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
 cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
 cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
-cp -rv tmp_comxwrt/force-ledtrig-netdev openwrt/package/
+
 
 echo "==== 6. COPIA ARCHIVOS DE CONFIG PERSONALIZADOS ===="
 mkdir -p openwrt/package/base-files/files/etc/config
