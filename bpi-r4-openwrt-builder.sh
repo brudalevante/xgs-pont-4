@@ -1,4 +1,4 @@
-vale antes de nada mi script compila todo automatiamente te lo voy a poner , este es mi scripr original el cual va perfecto nunca falla no quiero tocar nada del script si puede ser los vamos a llmar igual no hay que mejrarlo funciona perfecto te pongo y te pongo la extrututa del reposiorio que lo tengo creado que se llama https://github.com/brudalevante/xgs-pont-4.git                   #!/bin/bash
+
 
 set -e
 
