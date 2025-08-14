@@ -1,143 +1,89 @@
-#!/bin/bash
-
-#*****************************************************************************
-#
-# Build environment - Ubuntu 64-bit Server 24.04.2
-#
-# sudo apt update
-# sudo apt install build-essential clang flex bison g++ gawk \
-# gcc-multilib g++-multilib gettext git libncurses-dev libssl-dev \
-# python3-setuptools rsync swig unzip zlib1g-dev file wget \
-# libtraceevent-dev systemtap-sdt-dev libslang-dev
-#
-#*****************************************************************************
+vale antes de nada mi script compila todo automatiamente te lo voy a poner , este es mi scripr original el cual va perfecto nunca falla no quiero tocar nada del script si puede ser los vamos a llmar igual no hay que mejrarlo funciona perfecto te pongo y te pongo la extrututa del reposiorio que lo tengo creado que se llama https://github.com/brudalevante/xgs-pont-4.git                   #!/bin/bash
 
 set -e
 
-# Variables de commit/branch (modifica según tus últimos cambios)
-OPENWRT_REPO="https://github.com/brudalevante/openwrt-13-08-2025.git"
-OPENWRT_BRANCH="openwrt-24.10"
-OPENWRT_COMMIT="1ef48cdfe461a53d61c07f74c51997f0876bfde8"
-
-FEEDS_REPO="https://github.com/brudalevante/mtk-13-08-2025.git"
-FEEDS_COMMIT="927c227f021b2b18b5494b0314413a7b0112a5e5"
-
-FAKEMESH_REPO="https://github.com/brudalevante/fakemesh-6g.git"
-FAKEMESH_BRANCH="main"
-
-echo "==== 1. LIMPIEZA PREVIA ===="
+echo "==== 1. LIMPIEZA ===="
 rm -rf openwrt mtk-openwrt-feeds tmp_comxwrt
 
-echo "==== 2. CLONA REPOSITORIOS ===="
-git clone --branch "$OPENWRT_BRANCH" "$OPENWRT_REPO" openwrt || true
+echo "==== 2. CLONA TUS REPOS PERSONALES ===="
+git clone --branch openwrt-24.10 https://github.com/brudalevante/6.6.100-openwrt.git openwrt || true
 cd openwrt
-git checkout "$OPENWRT_COMMIT"
-echo "Commit actual (OpenWrt): $(git log -1 --pretty=oneline)"
-cd -
-
-git clone "$FEEDS_REPO" mtk-openwrt-feeds || true
+git checkout 4941509f573676c4678115a0a3a743ef78b63c17
+cd ..
+git clone https://github.com/brudalevante/mtk-openwrt-6.6.99.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds
-git checkout "$FEEDS_COMMIT"
-echo "Commit actual (feeds): $(git log -1 --pretty=oneline)"
-cd -
+git checkout 31c492d5c761176fcb15a3099f30d846450c01f5
+cd ..
 
-echo "${FEEDS_COMMIT:0:6}" > mtk-openwrt-feeds/autobuild/unified/feed_revision
+echo "==== 3. PREPARA FEEDS Y CONFIGURACIONES BASE ===="
+echo "31c492" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
-# Puedes activar el defconfig que te interese aquí
-#\cp -r configs/defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
-#\cp -r configs/dbg_defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig	# dbg+strongswan
-#####\cp -r configs/dbg_defconfig_crypto mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
+cp -r my_files/w-autobuild.sh mtk-openwrt-feeds/autobuild/unified/autobuild.sh
+cp -r my_files/w-rules mtk-openwrt-feeds/autobuild/unified/filogic/rules
+chmod 776 -R mtk-openwrt-feeds/autobuild/unified
 
-# Cambia feed_revision si quieres
-#\cp -r my_files/w-feed_revision mtk-openwrt-feeds/autobuild/unified/feed_revision
-
-echo "==== 3. COPIA REGLAS Y LIMPIA PARCHES CONFLICTIVOS ===="
-\cp -r my_files/w-rules mtk-openwrt-feeds/autobuild/unified/filogic/rules
 rm -rf mtk-openwrt-feeds/24.10/patches-feeds/108-strongswan-add-uci-support.patch
 
-# Wireless regdb mods (descomenta si lo necesitas)
-#rm -rf openwrt/package/firmware/wireless-regdb/patches/*.*
-#rm -rf mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/24.10/files/package/firmware/wireless-regdb/patches/*.*
-#\cp -r my_files/500-tx_power.patch mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/24.10/files/package/firmware/wireless-regdb/patches
-#\cp -r my_files/regdb.Makefile openwrt/package/firmware/wireless-regdb/Makefile
-
 echo "==== 4. COPIA PARCHES ===="
+cp -r my_files/1007-wozi-arch-arm64-dts-mt7988a-add-thermal-zone.patch mtk-openwrt-feeds/24.10/patches-base/
 cp -r my_files/200-wozi-libiwinfo-fix_noise_reading_for_radios.patch openwrt/package/network/utils/iwinfo/patches
-\cp -r my_files/99999_tx_power_check.patch mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/24.10/files/package/kernel/mt76/patches/
-\cp -r my_files/1007-wozi-arch-arm64-dts-mt7988a-add-thermal-zone.patch mtk-openwrt-feeds/24.10/patches-base/
-\cp -r my_files/999-2764-net-phy-sfp-add-some-FS-copper-SFP-fixes.patch openwrt/target/linux/mediatek/patches-6.6/
+cp -r my_files/99999_tx_power_check.patch mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/24.10/files/package/kernel/mt76/patches/
+cp -r my_files/999-2764-net-phy-sfp-add-some-FS-copper-SFP-fixes.patch openwrt/target/linux/mediatek/patches-6.6/
 
-echo "==== 5. DESACTIVA PERF EN CONFIGS BASE ===="
-sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/24.10/defconfig
-sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-feeds/autobuild/autobuild_5.4_mac80211_release/mt7988_wifi7_mac80211_mlo/.config
-sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-feeds/autobuild/autobuild_5.4_mac80211_release/mt7986_mac80211/.config
+echo "==== 5. CLONA Y COPIA PAQUETES PERSONALIZADOS ===="
+git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/dawn.git tmp_comxwrt
+cp -rv tmp_comxwrt/luci-app-fakemesh openwrt/package/
+cp -rv tmp_comxwrt/luci-app-autoreboot openwrt/package/
+cp -rv tmp_comxwrt/luci-app-cpu-status openwrt/package/
+cp -rv tmp_comxwrt/luci-app-temp-status openwrt/package/
+cp -rv tmp_comxwrt/luci-app-dawn2 openwrt/package/
+cp -rv tmp_comxwrt/luci-app-usteer2 openwrt/package/
 
-echo "==== 6. COPIA PAQUETES PERSONALIZADOS (mesh, etc) ===="
-git clone --depth=1 --single-branch --branch "$FAKEMESH_BRANCH" "$FAKEMESH_REPO" tmp_comxwrt
-for PKG in luci-app-fakemesh luci-app-autoreboot luci-app-cpu-status luci-app-temp-status luci-app-dawn2 luci-app-usteer2; do
-  \cp -rv "tmp_comxwrt/$PKG" openwrt/package/
-done
+echo "==== 6. COPIA ARCHIVOS DE CONFIG PERSONALIZADOS ===="
+mkdir -p openwrt/package/base-files/files/etc/config
+mkdir -p openwrt/package/base-files/files/etc
 
-echo "==== 7. CONFIGURACIÓN OPENWRT Y FEEDS ===="
+cp -v configs/network openwrt/package/base-files/files/etc/config/network
+cp -v configs/system openwrt/package/base-files/files/etc/config/system
+cp -v my_files/board.json openwrt/package/base-files/files/etc/board.json
+
+echo "==== 7. ENTRA EN OPENWRT Y CONFIGURA FEEDS ===="
 cd openwrt
-echo "==== LIMPIANDO feeds/ previos ===="
+
 rm -rf feeds/
-echo "==== USANDO feeds.conf.default DEL REPO (OFICIAL) ===="
 cat feeds.conf.default
 
-\cp -r ../configs/mm_perf.config .config 2>/dev/null || echo "No existe rc1_ext_mm_config, omitiendo"
+echo "==== 8. COPIA LA CONFIGURACIÃ“N BASE (mm_perf.config) ===="
+cp -v ../configs/mm_perf.config .config
 
-# Limpia perf en .config ANTES de feeds/install
-sed -i '/CONFIG_PACKAGE_perf=y/d' .config
-sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
-echo "# CONFIG_PACKAGE_perf is not set" >> .config
+echo "==== 9. COPIA TU CONFIGURACIÃ“N PERSONALIZADA AL DEFCONFIG DEL AUTOBUILD ===="
+cp -v ../configs/mm_perf.config ../mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
 
+echo "==== 10. ACTUALIZA E INSTALA FEEDS ===="
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-echo "==== 8. AÑADE PAQUETES PERSONALIZADOS AL .CONFIG ===="
-for PKG in fakemesh autoreboot cpu-status temp-status dawn2 usteer2; do
-  echo "CONFIG_PACKAGE_luci-app-$PKG=y" >> .config
-done
-
-# Limpia perf OTRA VEZ antes de make defconfig
-sed -i '/CONFIG_PACKAGE_perf=y/d' .config
-sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
-echo "# CONFIG_PACKAGE_perf is not set" >> .config
-
+echo "==== 11. RESUELVE DEPENDENCIAS ===="
 make defconfig
 
-# Limpia perf DESPUÉS de make defconfig (por si acaso)
-sed -i '/CONFIG_PACKAGE_perf=y/d' .config
-sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
-echo "# CONFIG_PACKAGE_perf is not set" >> .config
-
-echo "==== 9. VERIFICACIÓN PERF Y PAQUETES EN .CONFIG ===="
-grep perf .config || echo "perf NO está en .config"
-for PKG in fakemesh autoreboot cpu-status temp-status dawn2 usteer2; do
-  grep $PKG .config || echo "NO aparece $PKG en .config"
+echo "==== 12. VERIFICACIÃ“N FINAL ===="
+for pkg in \
+  fakemesh autoreboot cpu-status temp-status dawn2 dawn usteer2 wireguard
+do
+  grep $pkg .config || echo "NO aparece $pkg en .config"
 done
 
-echo "==== 10. SEGURIDAD: DESACTIVA PERF EN EL .CONFIG FINAL (por si acaso) ===="
-sed -i '/CONFIG_PACKAGE_perf=y/d' .config
-sed -i '/# CONFIG_PACKAGE_perf is not set/d' .config
-echo "# CONFIG_PACKAGE_perf is not set" >> .config
+grep "CONFIG_PACKAGE_kmod-wireguard=y" .config || echo "ATENCIÃ“N: kmod-wireguard NO estÃ¡ marcado"
+grep "CONFIG_PACKAGE_wireguard-tools=y" .config || echo "ATENCIÃ“N: wireguard-tools NO estÃ¡ marcado"
+grep "CONFIG_PACKAGE_luci-proto-wireguard=y" .config || echo "ATENCIÃ“N: luci-proto-wireguard NO estÃ¡ marcado"
 
-echo "==== 11. EJECUTA AUTOBUILD ===="
+echo "==== 13. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
-# ==== ELIMINAR EL WARNING EN ROJO DEL MAKEFILE ====
-sed -i 's/\($(call ERROR_MESSAGE,WARNING: Applying padding.*\)/#\1/' package/Makefile
-
-echo "==== ELIMINA WARNING SHA-512 DE scripts/ipkg-make-index.sh ===="
-if grep -q "WARNING: Applying padding" scripts/ipkg-make-index.sh; then
-  sed -i '/WARNING: Applying padding/d' scripts/ipkg-make-index.sh
-fi
-
-echo "==== 12. COMPILA ===="
+echo "==== 14. COMPILA ===="
 make -j$(nproc)
 
-echo "==== 13. LIMPIEZA FINAL ===="
+echo "==== 15. LIMPIEZA FINAL ===="
 cd ..
 rm -rf tmp_comxwrt
 
