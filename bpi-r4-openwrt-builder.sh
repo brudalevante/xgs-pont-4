@@ -30,6 +30,11 @@ cp -r my_files/200-wozi-libiwinfo-fix_noise_reading_for_radios.patch openwrt/pac
 cp -r my_files/99999_tx_power_check.patch mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/24.10/files/package/kernel/mt76/patches/
 cp -r my_files/999-2764-net-phy-sfp-add-some-FS-copper-SFP-fixes.patch openwrt/target/linux/mediatek/patches-6.6/
 
+sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-feeds/autobuild/unified/filogic/mac80211/24.10/defconfig
+sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-feeds/autobuild/autobuild_5.4_mac80211_release/mt7988_wifi7_mac80211_mlo/.config
+sed -i 's/CONFIG_PACKAGE_perf=y/# CONFIG_PACKAGE_perf is not set/' mtk-openwrt-feeds/autobuild/autobuild_5.4_mac80211_release/mt7986_mac80211/.config
+
+
 echo "==== 5. CLONA Y COPIA PAQUETES PERSONALIZADOS ===="
 git clone --depth=1 --single-branch --branch main https://github.com/brudalevante/dawn.git tmp_comxwrt
 cp -rv tmp_comxwrt/luci-app-fakemesh openwrt/package/
