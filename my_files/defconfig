@@ -125,4 +125,3 @@ CONFIG_MODULE_DEFAULT_firewall4=y
 CONFIG_PACKAGE_firewall4=y
 CONFIG_PACKAGE_tailscale=y
 CONFIG_PACKAGE_dawn=y
-CONFIG_PACKAGE_kmod-ledtrig-netdev=y
