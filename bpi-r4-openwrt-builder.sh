@@ -10,7 +10,7 @@ git clone --branch main https://github.com/brudalevante/oepnwrt-16-8-2025.git op
 cd openwrt
 git checkout 4941509f573676c4678115a0a3a743ef78b63c17
 cd ..
-git clone https://github.com/brudalevante/mtk-openwrt-6.6.99.git mtk-openwrt-feeds || true
+git clone https://github.com/brudalevante/mtk-openwrt-feeds-15-08-2025.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds
 git checkout 31c492d5c761176fcb15a3099f30d846450c01f5
 cd ..
