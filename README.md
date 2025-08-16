@@ -44,6 +44,8 @@ This is my first public OpenWrt work, a result of months of effort and collabora
 - **No more duplicated ports.**
 - **No more “disco” LEDs:** Port LEDs only light up when a cable is connected.
 - **Custom patches and enhancements** applied directly to OpenWrt.
+- **Support for multi-gigabit speeds:**  
+  - **A custom patch has been created within OpenWrt to support 2.5Gb, 5Gb, and 10Gb interface speeds.**
 - **Extra configuration:**  
   - Two folders under `config/`: `system` and `network`
   - `my_files/board.json` included and customized
@@ -55,6 +57,7 @@ You can check my repository or the included images to see all the work and featu
 #### This build features:
 - Kernel 6.6.100 (with all patches up to date)
 - Advanced LED and port management
+- **Multi-gigabit (2.5G, 5G, 10G) port support**
 - Custom system and network configs
 - Mesh with 6G support (“fakemesh”)
 - Board-specific adjustments via board.json
@@ -136,6 +139,8 @@ Este es mi primer trabajo público con OpenWrt, fruto de meses de esfuerzo y col
 - **Adiós a los puertos duplicados.**
 - **Adiós a las luces “de discoteca”:** Los LEDs solo se encienden si hay cable conectado.
 - **Parches y mejoras aplicados directamente sobre OpenWrt.**
+- **Soporte multigigabit:**  
+  - **Se ha creado un parche dentro de OpenWrt para soportar velocidades de 2,5Gb, 5Gb y 10Gb en los puertos.**
 - **Configuración extra:**  
   - Dos carpetas bajo `config/`: `system` y `network`
   - Incluido y personalizado `my_files/board.json`
@@ -147,6 +152,7 @@ Puedes ver el repositorio o las imágenes para comprobar todo lo que lleva:
 #### Características de esta build:
 - Kernel 6.6.100 (con todos los parches al día)
 - Gestión avanzada de LEDs y puertos
+- **Soporte multigigabit (2,5G, 5G, 10G) en los puertos**
 - Configs system y network personalizadas
 - Mesh con soporte para 6G (“fakemesh”)
 - Ajustes específicos via board.json
