@@ -24,9 +24,9 @@ git clone --branch main https://github.com/brudalevante/6.6.100-openwrt.git open
 cd openwrt; git checkout 4941509f573676c4678115a0a3a743ef78b63c17; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
 
 git clone https://github.com/brudalevante/mtk-openwrt-6.6.99.git mtk-openwrt-feeds || true
-cd mtk-openwrt-feeds; git checkout 39d725c3e3b486405e6148c8466111ef13516808; cd -; # Refactor wed amsdu init value
+cd mtk-openwrt-feeds; git checkout 31c492d5c761176fcb15a3099f30d846450c01f5; cd -; # Refactor wed amsdu init value
 
-echo "39d725" > mtk-openwrt-feeds/autobuild/unified/feed_revision
+echo "31c492" > mtk-openwrt-feeds/autobuild/unified/feed_revision
 
 # Puedes activar el defconfig que te interese aquí
 #\cp -r configs/defconfig mtk-openwrt-feeds/autobuild/unified/filogic/24.10/defconfig
