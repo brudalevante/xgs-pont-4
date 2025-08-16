@@ -20,7 +20,7 @@ rm -rf mtk-openwrt-feeds
 rm -rf tmp_comxwrt
 
 echo "==== 2. CLONA REPOSITORIOS ===="
-git clone --branch main https://github.com/brudalevante/6.6.100-openwrt.git openwrt || true
+git clone --branch mi-rama-6.6.99 https://github.com/brudalevante/openwrt.git openwrt || true
 cd openwrt; git checkout 4941509f573676c4678115a0a3a743ef78b63c17; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
 
 git clone https://github.com/brudalevante/mtk-openwrt-6.6.99.git mtk-openwrt-feeds || true
