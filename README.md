@@ -44,8 +44,9 @@ This is my first public OpenWrt work, a result of months of effort and collabora
 - **No more duplicated ports.**
 - **No more “disco” LEDs:** Port LEDs only light up when a cable is connected.
 - **Custom patches and enhancements** applied directly to OpenWrt.
-- **Support for multi-gigabit speeds:**  
-  - **A custom patch has been created within OpenWrt to support 2.5Gb, 5Gb, and 10Gb interface speeds.**
+- **Support for all common Ethernet speeds (1Gb, 2.5Gb, 5Gb, 10Gb):**  
+  - **A custom patch was created within OpenWrt to extend the netdev LED trigger and full port support for 1Gb, 2.5Gb, 5Gb, and 10Gb speeds.**  
+  - Now, LEDs and software can correctly detect and indicate the link status at all these speeds.
 - **Extra configuration:**  
   - Two folders under `config/`: `system` and `network`
   - `my_files/board.json` included and customized
@@ -57,7 +58,7 @@ You can check my repository or the included images to see all the work and featu
 #### This build features:
 - Kernel 6.6.100 (with all patches up to date)
 - Advanced LED and port management
-- **Multi-gigabit (2.5G, 5G, 10G) port support**
+- **Multi-gigabit (1G, 2.5G, 5G, 10G) port support (with netdev LED trigger patch)**
 - Custom system and network configs
 - Mesh with 6G support (“fakemesh”)
 - Board-specific adjustments via board.json
@@ -139,8 +140,9 @@ Este es mi primer trabajo público con OpenWrt, fruto de meses de esfuerzo y col
 - **Adiós a los puertos duplicados.**
 - **Adiós a las luces “de discoteca”:** Los LEDs solo se encienden si hay cable conectado.
 - **Parches y mejoras aplicados directamente sobre OpenWrt.**
-- **Soporte multigigabit:**  
-  - **Se ha creado un parche dentro de OpenWrt para soportar velocidades de 2,5Gb, 5Gb y 10Gb en los puertos.**
+- **Soporte para todas las velocidades Ethernet habituales (1Gb, 2,5Gb, 5Gb, 10Gb):**  
+  - **Se ha creado un parche dentro de OpenWrt que extiende el trigger de LEDs y el soporte de puertos para 1Gb, 2,5Gb, 5Gb y 10Gb.**  
+  - Ahora los LEDs y el sistema detectan y muestran correctamente el estado de enlace a todas estas velocidades.
 - **Configuración extra:**  
   - Dos carpetas bajo `config/`: `system` y `network`
   - Incluido y personalizado `my_files/board.json`
@@ -152,7 +154,7 @@ Puedes ver el repositorio o las imágenes para comprobar todo lo que lleva:
 #### Características de esta build:
 - Kernel 6.6.100 (con todos los parches al día)
 - Gestión avanzada de LEDs y puertos
-- **Soporte multigigabit (2,5G, 5G, 10G) en los puertos**
+- **Soporte multigigabit (1G, 2,5G, 5G, 10G) en los puertos (con parche en trigger de LEDs netdev)**
 - Configs system y network personalizadas
 - Mesh con soporte para 6G (“fakemesh”)
 - Ajustes específicos via board.json
