@@ -1,29 +1,32 @@
+## Quick Start
 
+**Clone the repository:**
 
-
- 
- >git clone ht<span>tps://github.com/brudalevante/xgs-pont-4.git
- 
- >chmod 776 -R xgs-pont-4
- 
- >cd xgs-pont-4
- 
- BEFORE RUNNING BUILDER READ ALL COMMENTS IN THE SCRIPT !
- 
- >./bpi-r4-openwrt-builder.sh
+```bash
+git clone https://github.com/brudalevante/xgs-pont-4.git
 ```
 
+**Set the correct permissions:**
 
- Notes for those who want to create their own experimental releases:
-- use only VERIFIED mainline openwrt commits
-- not all mtk  commits on their git are fully functional and each other compatible
-  with mainline openwrt commits and can require additional patching for successful 
-  build
- 
-  
- Tested on VMware Fusion, Workstation and Hyper-V
+```bash
+chmod 776 -R xgs-pont-4
+```
 
+**Enter the project directory:**
 
+```bash
+cd xgs-pont-4
+```
+
+> **Before running the builder, please read all comments in the script!**
+
+**To start the build process:**
+
+```bash
+./bpi-r4-openwrt-builder.sh
+```
+
+---
 
 # xgs-pont-4 (OpenWrt Kernel 6.6.100)  
 *(Español abajo)*
