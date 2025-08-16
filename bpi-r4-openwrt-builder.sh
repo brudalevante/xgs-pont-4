@@ -81,6 +81,17 @@ grep "CONFIG_PACKAGE_luci-proto-wireguard=y" .config || echo "ATENCIÓN: luci-pr
 echo "==== 13. EJECUTA AUTOBUILD ===="
 bash ../mtk-openwrt-feeds/autobuild/unified/autobuild.sh filogic-mac80211-mt7988_rfb-mt7996 log_file=make
 
+# ==== ELIMINAR EL WARNING EN ROJO DEL MAKEFILE ====
+sed -i 's/\($(call ERROR_MESSAGE,WARNING: Applying padding.*\)/#\1/' package/Makefile
+
+echo "==== ELIMINA WARNING SHA-512 DE scripts/ipkg-make-index.sh ===="
+if grep -q "WARNING: Applying padding" scripts/ipkg-make-index.sh; then
+  sed -i '/WARNING: Applying padding/d' scripts/ipkg-make-index.sh
+fi
+
+echo "==== 12. COMPILA ===="
+make -j$(nproc)
+
 echo "==== 14. COMPILA ===="
 make -j$(nproc)
 
