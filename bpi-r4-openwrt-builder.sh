@@ -5,9 +5,9 @@ set -e
 echo "==== 1. LIMPIEZA ===="
 rm -rf openwrt mtk-openwrt-feeds tmp_comxwrt
 
-echo "==== 2. CLONA REPOSITORIOS ===="
+echo "==== 2. CLONA REPOSITORIOS (kernel 6.6.100 aunque ponga 6.6.99) ===="
 git clone --branch mi-rama-6.6.99 https://github.com/brudalevante/openwrt.git openwrt || true
-cd openwrt; git checkout 4941509f573676c4678115a0a3a743ef78b63c17; cd -;	# uhttpd: update to Git HEAD (2025-07-06)
+cd openwrt; git checkout 4941509f573676c4678115a0a3a743ef78b63c17; cd -;	# uhttpd: update to Git HEAD (2025-07-06) kernel 6.6.100
 
 git clone https://github.com/brudalevante/mtk-openwrt-6.6.99.git mtk-openwrt-feeds || true
 cd mtk-openwrt-feeds; git checkout 31c492d5c761176fcb15a3099f30d846450c01f5; cd -; # Refactor wed amsdu init value
